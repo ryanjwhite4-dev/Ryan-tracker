@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Ryan's Firefighter Program</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07070e;
+    --bg2: #0b0b16;
+    --bg3: #0f0f1c;
+    --bg4: #141420;
+    --border: #1a1a2e;
+    --border2: #252540;
+    --text: #dde0f0;
+    --text2: #8888aa;
+    --text3: #404065;
+    --push: #f97316;
+    --pull: #3b82f6;
+    --cond: #ef4444;
+    --lower: #22c55e;
+    --upper: #a855f7;
+    --recov: #14b8a6;
+    --rest: #6b7280;
+    --green: #4caa38;
+    --red: #ee5555;
+    --gold: #c8a030;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    max-width: 680px;
+    margin: 0 auto;
+    font-size: 14px;
+  }
+  /* HEADER */
+  .hdr {
+    background: linear-gradient(155deg,#0b1222,#13203a);
+    padding: 16px 14px 12px;
+    border-bottom: 1px solid #192540;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .hdr-top { display: flex; align-items: center; gap: 10px; }
+  .hdr-flame { font-size: 26px; line-height: 1; }
+  .hdr-title { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+  .hdr-sub { font-size: 11px; color: #4a6080; margin-top: 2px; }
+  .hdr-week { margin-left: auto; text-align: right; }
+  .hdr-week-num { font-size: 18px; font-weight: 800; color: var(--pull); font-family:'Barlow Condensed',sans-serif; }
+  .hdr-week-lbl { font-size: 9px; color: var(--text3); }
+  .goal-chips { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 8px; }
+  .chip { background: #0d1a2e; border: 1px solid #1a2e48; border-radius: 20px; padding: 2px 9px; font-size: 10px; color: #5080aa; }
+  .labs-warn { background: #110808; border: 1px solid #aa303033; border-radius: 8px; padding: 8px 12px; margin-top: 10px; font-size: 11px; color: #aa6060; }
+  .labs-warn strong { color: #dd5050; }
+  /* TABS */
+  .tabs { display: flex; background: var(--bg2); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 99; }
+  .tab-btn {
+    flex: 1; padding: 10px 2px; border: none; background: transparent;
+    color: var(--text3); font-size: 10px; font-weight: 700; cursor: pointer;
+    border-bottom: 2px solid transparent; transition: color .15s, border-color .15s;
+    font-family: 'Barlow', sans-serif;
+  }
+  .tab-btn.active { color: #5a9ee0; border-bottom-color: #4880d8; }
+  /* BODY */
+  .body { padding: 13px 13px 80px; }
+  /* CARDS */
+  .card { background: var(--bg3); border: 1px solid var(--border); border-radius: 11px; margin-bottom: 9px; overflow: hidden; }
+  .card-hd { padding: 11px 13px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; }
+  .card-body { padding: 13px; border-top: 1px solid #13131e; }
+  .tag { border-radius: 5px; padding: 2px 7px; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+  .day-name { font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+  .day-sub { font-size: 10px; color: var(--text3); margin-top: 1px; }
+  .badge-today { background: #182210; color: #5caa28; font-size: 9px; padding: 1px 6px; border-radius: 9px; font-weight: 800; }
+  .chevron { font-size: 11px; transition: transform .2s; }
+  .chevron.open { transform: rotate(180deg); }
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { color: var(--text3); font-weight: 700; text-align: left; padding: 3px 5px 8px; font-size: 11px; }
+  td { padding: 7px 5px; border-top: 1px solid #14141e; vertical-align: top; }
+  .ex-name { font-weight: 600; color: #ccd; }
+  .ex-notes { font-size: 10px; color: var(--text3); margin-top: 2px; line-height: 1.4; }
+  .td-center { text-align: center; color: #aac; }
+  .td-rest { text-align: center; color: var(--text3); font-size: 10px; }
+  /* CARDIO BOX */
+  .cardio-box { margin-top: 11px; background: #0c1a0e; border: 1px solid #1a3a20; border-radius: 8px; padding: 9px 12px; }
+  .cardio-title { font-size: 10px; font-weight: 800; color: var(--green); margin-bottom: 3px; }
+  .cardio-notes { font-size: 11px; color: #4a7050; }
+  /* BUTTONS */
+  .btn { border: none; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; padding: 11px 0; width: 100%; color: #fff; font-family:'Barlow',sans-serif; transition: opacity .15s; }
+  .btn:active { opacity: .8; }
+  .btn-blue { background: linear-gradient(135deg,#1e55c0,#0f3880); }
+  .btn-green { background: linear-gradient(135deg,#1a5530,#0f3820); }
+  .btn-ghost { background: transparent; color: var(--text3); border: 1px solid var(--border2); width: auto; padding: 5px 10px; font-size: 10px; border-radius: 7px; }
+  .log-day-btn {
+    padding: 5px 10px; border-radius: 7px; border: 1px solid var(--border2);
+    background: var(--bg3); color: var(--text3); font-size: 10px; font-weight: 700;
+    cursor: pointer; font-family:'Barlow',sans-serif; transition: all .15s;
+  }
+  .log-day-btn.active { }
+  .go-log-btn {
+    margin-top: 11px; padding: 8px 15px; border-radius: 7px;
+    font-weight: 700; font-size: 11px; cursor: pointer; font-family:'Barlow',sans-serif;
+  }
+  /* INPUTS */
+  input[type=number], input[type=text] {
+    width: 56px; padding: 6px 7px; background: var(--bg4); border: 1px solid var(--border2);
+    border-radius: 5px; color: var(--text); font-size: 11px; font-family:'Barlow',sans-serif;
+  }
+  input.prev-hint { background: #1a1a08; border-color: #505020; }
+  textarea {
+    width: 100%; min-height: 65px; padding: 9px; background: var(--bg4);
+    border: 1px solid var(--border2); border-radius: 7px; color: var(--text);
+    font-size: 12px; resize: vertical; font-family:'Barlow',sans-serif; margin-bottom: 10px;
+  }
+  /* RATING */
+  .rating-row { display: flex; gap: 7px; }
+  .rating-btn {
+    width: 34px; height: 34px; border-radius: 7px; border: 1px solid var(--border2);
+    background: var(--bg4); color: var(--text3); font-weight: 700; font-size: 12px;
+    cursor: pointer; font-family:'Barlow',sans-serif; transition: all .15s;
+  }
+  /* STAT GRID */
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+  .stat-box { background: var(--bg3); border: 1px solid var(--border); border-radius: 11px; padding: 13px; text-align: center; }
+  .stat-num { font-family:'Barlow Condensed',sans-serif; font-size: 24px; font-weight: 800; }
+  .stat-lbl { font-size: 9px; color: var(--text3); margin-top: 3px; }
+  /* WEEK ROW */
+  .week-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #12121e; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border2); display: inline-block; margin-right: 8px; }
+  .dot.done { background: var(--green); }
+  /* SESSION / CI ROW */
+  .session-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #12121e; font-size: 11px; }
+  .ci-row { padding: 9px 0; border-bottom: 1px solid #12121e; }
+  .ci-meta { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
+  .ci-note { font-size: 11px; color: #6070a0; }
+  /* LABS */
+  .lab-row { padding: 9px 13px; border-bottom: 1px solid #12121e; display: flex; align-items: flex-start; gap: 10px; }
+  .lab-name { font-size: 12px; font-weight: 600; }
+  .lab-note { font-size: 10px; color: var(--text3); margin-top: 2px; }
+  .lab-val { font-family:'Barlow Condensed',sans-serif; font-size: 15px; font-weight: 800; }
+  .lab-ref { font-size: 9px; color: var(--text3); }
+  .high { color: #ee6060 !important; }
+  .borderline { color: #f0a030 !important; }
+  .normal { color: var(--green) !important; }
+  /* GUIDE */
+  .guide-card { border-radius: 11px; padding: 14px; margin-bottom: 11px; }
+  .guide-title { font-family:'Barlow Condensed',sans-serif; font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+  .guide-body { font-size: 12px; color: #8888b0; line-height: 1.65; }
+  /* TOAST */
+  #toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: #1a3a20; border: 1px solid #2a6030; border-radius: 10px;
+    padding: 10px 22px; font-size: 13px; font-weight: 700; color: #6dcc50;
+    z-index: 999; white-space: nowrap; box-shadow: 0 4px 20px #00000080;
+    opacity: 0; transition: opacity .2s, transform .2s; pointer-events: none;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  /* CLEAR */
+  .danger-btn { padding: 8px 14px; background: #1a0808; border: 1px solid #442020; border-radius: 7px; color: #884444; font-size: 11px; font-weight: 700; cursor: pointer; font-family:'Barlow',sans-serif; }
+  .danger-confirm { font-size: 11px; color: #cc5050; margin-bottom: 9px; }
+  .confirm-row { display: flex; gap: 8px; }
+  .confirm-yes { padding: 8px 14px; background: #3a0808; border: 1px solid #882020; border-radius: 7px; color: #ee5050; font-size: 11px; font-weight: 700; cursor: pointer; font-family:'Barlow',sans-serif; }
+  .confirm-no { padding: 8px 14px; background: var(--bg4); border: 1px solid var(--border2); border-radius: 7px; color: var(--text3); font-size: 11px; font-weight: 700; cursor: pointer; font-family:'Barlow',sans-serif; }
+  /* PHOTOS TAB */
+  .photo-entry { border: 1px solid var(--border); border-radius: 11px; overflow: hidden; margin-bottom: 10px; background: var(--bg3); }
+  .photo-hd { padding: 11px 13px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+  .photo-meta { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 0 13px 13px; }
+  .photo-grid img { width: 100%; border-radius: 7px; object-fit: cover; aspect-ratio: 3/4; }
+  .photo-note { padding: 0 13px 13px; font-size: 11px; color: var(--text2); }
+  .add-photo-form { background: var(--bg4); border: 1px solid var(--border2); border-radius: 11px; padding: 13px; margin-bottom: 10px; }
+  .form-label { font-size: 10px; color: var(--text3); margin-bottom: 5px; display: block; }
+  input[type=date], input[type=number].weight-inp {
+    width: 100%; padding: 7px 9px; background: var(--bg); border: 1px solid var(--border2);
+    border-radius: 6px; color: var(--text); font-size: 12px; margin-bottom: 10px; font-family:'Barlow',sans-serif;
+  }
+  .file-row { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 10px; }
+  .file-slot { flex: 1; min-width: 70px; }
+  .file-slot label { display: block; background: var(--bg); border: 1px dashed var(--border2); border-radius: 7px; padding: 12px 5px; text-align: center; font-size: 9px; color: var(--text3); cursor: pointer; }
+  .file-slot input[type=file] { display: none; }
+  .file-preview { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 7px; display: none; }
+  .section-title { font-family:'Barlow Condensed',sans-serif; font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 12px; letter-spacing: 0.3px; }
+  p.desc { font-size: 12px; color: var(--text3); margin-bottom: 12px; }
+  hr.divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
+  .inline-row { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; margin-bottom: 10px; }
+  /* WARMUP */
+  .warmup-box { margin-bottom: 13px; background: #0d0d18; border: 1px solid #1e1e38; border-radius: 9px; overflow: hidden; }
+  .warmup-toggle { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 9px 12px; background: transparent; border: none; color: #7070a0; font-size: 11px; font-weight: 700; cursor: pointer; font-family: 'Barlow', sans-serif; text-align: left; }
+  .warmup-toggle span { color: #3a3a60; font-size: 10px; }
+  .warmup-inner { padding: 2px 12px 10px; }
+  .warmup-row { padding: 5px 0; border-top: 1px solid #14141e; }
+  .warmup-name { font-size: 11px; color: #9090b8; font-weight: 600; }
+  .warmup-sets { font-size: 10px; color: #5050a0; }
+  .warmup-note { font-size: 10px; color: #404060; margin-top: 1px; line-height: 1.35; }
+  .prev-lbl { font-size: 9px; color: #806020; font-style: italic; }
+  .ex-lbl { font-size: 11px; font-weight: 700; color: #bbd; margin-bottom: 5px; }
+  .logged-badge { margin-left: auto; font-size: 10px; color: var(--green); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<div class="hdr">
+  <div class="hdr-top">
+    <span class="hdr-flame">🔥</span>
+    <div>
+      <div class="hdr-title">Ryan's Firefighter Program</div>
+      <div class="hdr-sub">5'6" · 177 lbs · 35yo · Career FF · T: 530 ng/dL</div>
+    </div>
+    <div class="hdr-week">
+      <div class="hdr-week-num" id="week-count">0/6</div>
+      <div class="hdr-week-lbl">this week</div>
+    </div>
+  </div>
+  <div class="goal-chips">
+    <span class="chip">Strength</span>
+    <span class="chip">Job Performance</span>
+    <span class="chip">Conditioning</span>
+    <span class="chip">Lean Abs</span>
+    <span class="chip">Bigger Chest</span>
+    <span class="chip">Heart Health</span>
+  </div>
+  <div class="labs-warn">⚠️ <strong>Labs flagged:</strong> LDL 197 · Cholesterol 281 · Triglycerides 199. Follow up with your doctor. Program includes mandatory post-lift cardio.</div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" data-tab="plan">📋 Plan</button>
+  <button class="tab-btn" data-tab="log">✍️ Log</button>
+  <button class="tab-btn" data-tab="progress">📈 Progress</button>
+  <button class="tab-btn" data-tab="photos">📸 Photos</button>
+  <button class="tab-btn" data-tab="labs">🩸 Labs</button>
+  <button class="tab-btn" data-tab="guide">📘 Guide</button>
+</div>
+
+<div class="body">
+
+<!-- ═══════════════ PLAN ═══════════════ -->
+<div id="tab-plan" class="tab-pane">
+  <p class="desc">5-day split + mandatory 20-min post-lift cardio every lifting day. Tap a day to expand.</p>
+  <div id="plan-list"></div>
+</div>
+
+<!-- ═══════════════ LOG ═══════════════ -->
+<div id="tab-log" class="tab-pane" style="display:none">
+  <p class="desc">Select a day, log weights & reps, and complete your daily check-in.</p>
+  <div id="day-selector" style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px;"></div>
+  <div id="log-content"></div>
+</div>
+
+<!-- ═══════════════ PROGRESS ═══════════════ -->
+<div id="tab-progress" class="tab-pane" style="display:none">
+  <p class="desc">Your training history and trends. All data persists across sessions.</p>
+  <div class="stat-grid">
+    <div class="stat-box"><div class="stat-num" id="stat-total" style="color:#5b9de0">0</div><div class="stat-lbl">Total Sessions</div></div>
+    <div class="stat-box"><div class="stat-num" id="stat-week" style="color:#f97316">0/6</div><div class="stat-lbl">This Week</div></div>
+    <div class="stat-box"><div class="stat-num" id="stat-energy" style="color:#f97316">—</div><div class="stat-lbl">Avg Energy</div></div>
+    <div class="stat-box"><div class="stat-num" id="stat-sleep" style="color:#22c55e">—h</div><div class="stat-lbl">Avg Sleep</div></div>
+  </div>
+  <div id="progress-content"></div>
+</div>
+
+<!-- ═══════════════ PHOTOS ═══════════════ -->
+<div id="tab-photos" class="tab-pane" style="display:none">
+  <p class="desc">Progress photos — date-stamped entries with weight and notes.</p>
+
+  <div class="add-photo-form">
+    <div class="section-title" style="margin-bottom:12px;">+ New Entry</div>
+    <label class="form-label">Date</label>
+    <input type="date" id="photo-date">
+    <label class="form-label">Weight (lbs)</label>
+    <input type="number" class="weight-inp" id="photo-weight" placeholder="177">
+    <label class="form-label">Notes</label>
+    <textarea id="photo-notes" style="margin-bottom:10px;" placeholder="e.g. Week 4 check-in. Down 3 lbs. Waist looks tighter from the side..."></textarea>
+    <label class="form-label">Photos (up to 4)</label>
+    <div class="file-row" id="photo-slots"></div>
+    <button class="btn btn-blue" onclick="savePhotoEntry()">💾 Save Entry</button>
+  </div>
+
+  <hr class="divider">
+  <div class="section-title">Past Entries</div>
+  <div id="photo-list"></div>
+</div>
+
+<!-- ═══════════════ LABS ═══════════════ -->
+<div id="tab-labs" class="tab-pane" style="display:none">
+  <div style="background:#110808;border:1px solid #aa303044;border-radius:10px;padding:11px 14px;margin-bottom:14px;">
+    <div style="font-weight:700;font-size:12px;color:#ee6060;margin-bottom:5px;">⚠️ Medical Follow-Up Required</div>
+    <p style="margin:0;font-size:11px;color:#aa7070;line-height:1.6;">LDL of 197 meets the threshold for familial hypercholesterolemia evaluation. Hematocrit slightly elevated (common on T). Please discuss with your physician and T prescriber. This is not medical advice.</p>
+  </div>
+  <div class="card" style="padding:0">
+    <div style="padding:10px 13px 7px;border-bottom:1px solid #13131e;">
+      <span style="font-weight:700;font-size:12px;color:#bbd;">Quest Diagnostics — 02/16/2026</span>
+    </div>
+    <div id="labs-list"></div>
+  </div>
+  <div class="card" style="padding:13px;margin-top:11px;">
+    <div style="font-weight:700;font-size:12px;margin-bottom:11px;color:#bbd;">🧠 How This Program Addresses Your Labs</div>
+    <div id="labs-actions"></div>
+  </div>
+</div>
+
+<!-- ═══════════════ GUIDE ═══════════════ -->
+<div id="tab-guide" class="tab-pane" style="display:none">
+  <div id="guide-list"></div>
+  <div style="background:#100e07;border:1px solid #40380e;border-radius:11px;padding:14px;">
+    <div class="guide-title" style="color:#c8a030;">⚠️ Disclaimer</div>
+    <p class="guide-body" style="color:#706840;">General fitness guide, not medical advice. Your lipid panel requires physician follow-up. As a career firefighter your cardiovascular health is a personal and occupational safety concern. Please discuss your labs with your doctor and T prescriber.</p>
+  </div>
+</div>
+
+</div><!-- /body -->
+
+<script>
+// ─── DATA ─────────────────────────────────────────────────────────────────────
+const WARMUPS = {
+  Monday: [
+    {name:"5 min Bike / Incline Walk", notes:"Raise core temp. HR to ~110 bpm."},
+    {name:"Band Pull-Aparts", sets:"2×15", notes:"Activate rear delts and rotator cuff before any pressing."},
+    {name:"Arm Circles — forward & back", sets:"2×10", notes:"Shoulder joint prep. Big controlled circles."},
+    {name:"Light Bench Press (bar only)", sets:"2×10", notes:"Groove the pattern. Feel chest stretch at the bottom."},
+    {name:"Incline Push-Up", sets:"1×15", notes:"Upper chest activation before loaded work."},
+  ],
+  Tuesday: [
+    {name:"5 min Row", notes:"Perfect warm-up for pull day. Gets lats, rhomboids, and posterior chain moving."},
+    {name:"Cat-Cow", sets:"2×10", notes:"Spinal mobility before deadlifts — non-negotiable."},
+    {name:"Hip Hinge with Dowel / PVC", sets:"2×10", notes:"Groove the deadlift pattern unloaded. Keep bar path vertical."},
+    {name:"Band Face Pulls", sets:"2×15", notes:"Activate rear delts and external rotators."},
+    {name:"Dead Hang", sets:"2×20 sec", notes:"Decompress spine, activate grip before pulling work."},
+  ],
+  Wednesday: [
+    {name:"5 min Incline Walk or Jog", notes:"Conditioning warm-up is shorter — you're going hard soon."},
+    {name:"World's Greatest Stretch", sets:"5/side", notes:"Hip flexors, thoracic spine, hamstrings — full chain in one move."},
+    {name:"Lateral Band Walks", sets:"2×12/side", notes:"Hip abductor activation for sled and carry stability."},
+    {name:"Empty Sled or Bodyweight Carry Walk", sets:"1×30 sec", notes:"Mimic the pattern at zero load before adding weight."},
+  ],
+  Thursday: [
+    {name:"5 min Bike", notes:"Legs are about to take a beating. Get blood moving first."},
+    {name:"Glute Bridge", sets:"2×15", notes:"Activate glutes before squats and hip thrusts."},
+    {name:"Bodyweight Squat", sets:"2×10", notes:"Groove depth and hip mobility. Add light goblet squat if hips are tight."},
+    {name:"Hip Flexor Stretch", sets:"2×45 sec/side", notes:"Tight hip flexors kill squat depth and load up your lower back."},
+    {name:"Leg Swing — front/back & lateral", sets:"10/direction", notes:"Dynamic hip joint prep."},
+  ],
+  Friday: [
+    {name:"5 min Bike / Incline Walk", notes:"General CNS activation."},
+    {name:"Band Pull-Aparts", sets:"2×15", notes:"Shoulder health before OHP."},
+    {name:"Scapular Wall Slides", sets:"2×10", notes:"Rotator cuff and scapular control — critical for OHP safety."},
+    {name:"Bar-Only Overhead Press", sets:"2×8", notes:"Groove OHP pattern, feel the lockout."},
+    {name:"Dead Hang", sets:"1×20 sec", notes:"Shoulder prep and grip before pull-ups."},
+  ],
+  Saturday: [
+    {name:"No formal warm-up needed", notes:"Active recovery day — just start moving slowly and let the body guide it."},
+  ],
+};
+
+const PROGRAM = [
+  { day:"Monday", tag:"push", color:"#f97316", label:"Push — Chest / Shoulders / Triceps", focus:"Chest mass, pressing strength, upper body aesthetics",
+    exercises:[
+      {name:"Barbell Bench Press",sets:4,reps:"5",rest:"3 min",notes:"Primary chest builder. Retract scapula, drive feet. Add 5 lbs when all reps clean."},
+      {name:"Incline Barbell Press",sets:3,reps:"8",rest:"2 min",notes:"Upper chest fullness — key for your bigger chest goal."},
+      {name:"Seated DB Shoulder Press",sets:3,reps:"10",rest:"90 sec",notes:"Shoulder mass + overhead stability critical for firefighting."},
+      {name:"Cable / DB Lateral Raises",sets:3,reps:"12–15",rest:"60 sec",notes:"Shoulder width. Go lighter, feel the muscle."},
+      {name:"Tricep Rope Pushdown",sets:3,reps:"12",rest:"60 sec",notes:"Arm definition + lockout strength on all pressing."},
+      {name:"Hollow Body Hold",sets:3,reps:"30 sec",rest:"45 sec",notes:"Deep core bracing — foundation for visible abs."},
+    ],
+    cardio:{duration:"20 min",hr:"130–145 bpm",notes:"Post-lift. Bike or treadmill incline walk. HDL builder — don't skip it."}
+  },
+  { day:"Tuesday", tag:"pull", color:"#3b82f6", label:"Pull — Back / Biceps / Rear Delts", focus:"Back thickness, pulling strength, posture",
+    exercises:[
+      {name:"Barbell Deadlift",sets:4,reps:"5",rest:"3 min",notes:"Most important lift for firefighter strength. Flat back, hard brace, controlled descent."},
+      {name:"Barbell Bent-Over Row",sets:4,reps:"8",rest:"2 min",notes:"Back thickness and posture. Pull to lower chest."},
+      {name:"Pull-Ups / Lat Pulldown",sets:3,reps:"8–10",rest:"90 sec",notes:"V-taper and pulling power. Work toward full unassisted pull-ups."},
+      {name:"Face Pulls",sets:3,reps:"15",rest:"60 sec",notes:"Rear delt and rotator cuff health — shoulder injury prevention."},
+      {name:"Barbell / DB Curl",sets:3,reps:"12",rest:"60 sec",notes:"Arm size and grip strength."},
+      {name:"Plank Shoulder Tap",sets:3,reps:"10/side",rest:"45 sec",notes:"Anti-rotation core — crucial for dragging and carrying on calls."},
+    ],
+    cardio:{duration:"20 min",hr:"130–145 bpm",notes:"Post-lift. Rowing machine preferred — great for triglycerides."}
+  },
+  { day:"Wednesday", tag:"conditioning", color:"#ef4444", label:"Conditioning — Firefighter Performance Day", focus:"Job-specific aerobic power, functional strength",
+    exercises:[
+      {name:"Sled Push (or Treadmill Incline)",sets:5,reps:"40 yd / 2 min",rest:"90 sec",notes:"Simulates hose drag. Load heavy, breathe steady. Most job-specific exercise you can do."},
+      {name:"Farmer Carries",sets:4,reps:"50 ft heavy",rest:"90 sec",notes:"13–15 steps out and back = one set. Grip, core, loaded carry — this is literally your job."},
+      {name:"Box Step-Ups with Weight",sets:3,reps:"10/leg",rest:"60 sec",notes:"Stair climbing simulation under load. Use a vest if available."},
+      {name:"Battle Ropes / KB Swings",sets:4,reps:"30 sec",rest:"60 sec",notes:"Explosive cardiorespiratory power — mimics burst exertion on calls."},
+      {name:"Rowing Machine",sets:1,reps:"15 min steady",rest:"N/A",notes:"Aerobic cooldown. HR 130–150 bpm. Critical for your lipid numbers."},
+      {name:"Dead Bugs",sets:3,reps:"10/side",rest:"45 sec",notes:"Deep core activation, lower ab emphasis."},
+    ],
+    cardio:null
+  },
+  { day:"Thursday", tag:"lower", color:"#22c55e", label:"Lower Body — Legs / Glutes / Core", focus:"Leg strength, core stability, lower ab development",
+    exercises:[
+      {name:"Barbell Back Squat",sets:4,reps:"5",rest:"3 min",notes:"King of lower body. Full depth, hard brace. Add 5 lbs when all reps are clean."},
+      {name:"Romanian Deadlift (RDL)",sets:3,reps:"10",rest:"2 min",notes:"Hamstring strength + hip hinge reinforcement."},
+      {name:"Barbell Hip Thrust",sets:3,reps:"12",rest:"90 sec",notes:"Glute power — explosive movement on calls and stairs."},
+      {name:"Walking Lunges",sets:3,reps:"12/leg",rest:"90 sec",notes:"Unilateral balance + conditioning."},
+      {name:"Hanging Leg Raises",sets:4,reps:"10–12",rest:"60 sec",notes:"Lower ab development — your primary aesthetic goal here."},
+      {name:"Ab Wheel Rollout",sets:3,reps:"8–10",rest:"60 sec",notes:"Full core strength — the base for visible abs."},
+    ],
+    cardio:{duration:"20 min",hr:"130–145 bpm",notes:"Post-lift. Bike preferred (quads are tired). Crucial for your cholesterol protocol."}
+  },
+  { day:"Friday", tag:"upper", color:"#a855f7", label:"Upper Body — Strength + Volume", focus:"Strength maintenance, hypertrophy volume, aesthetic work",
+    exercises:[
+      {name:"Overhead Press (OHP)",sets:4,reps:"5",rest:"3 min",notes:"Overhead strength essential for job performance. Brace hard, no lower back arch."},
+      {name:"Weighted Pull-Ups",sets:4,reps:"6",rest:"2 min",notes:"Add weight when 6 reps feel controlled and easy."},
+      {name:"DB Incline Flye",sets:3,reps:"12",rest:"60 sec",notes:"Chest stretch and shape. Controlled eccentric."},
+      {name:"Cable Row",sets:3,reps:"12",rest:"60 sec",notes:"Mid-back detail and posture work."},
+      {name:"Tricep Overhead Extension",sets:3,reps:"12",rest:"60 sec",notes:"Long head tricep — arm size."},
+      {name:"Reverse Crunches",sets:4,reps:"15",rest:"45 sec",notes:"Lower abs. Control the descent — that's where the work is."},
+    ],
+    cardio:{duration:"20 min",hr:"130–145 bpm",notes:"4th cardio session of the week — non-negotiable given your lipid panel."}
+  },
+  { day:"Saturday", tag:"recovery", color:"#14b8a6", label:"Active Recovery + Mobility", focus:"Movement, mobility, injury prevention",
+    exercises:[
+      {name:"30 min Walk or Easy Bike",sets:1,reps:"30 min",rest:"N/A",notes:"Stay moving. HR under 120 bpm. Even this counts for your HDL over time."},
+      {name:"Hip Flexor Stretch",sets:2,reps:"60 sec/side",rest:"N/A",notes:"Critical for firefighters who sit between calls. Tight hip flexors = back pain."},
+      {name:"Thoracic Spine Rotation",sets:2,reps:"10/side",rest:"N/A",notes:"Counteracts carrying heavy gear on your upper back."},
+      {name:"Foam Roll",sets:1,reps:"5–8 min",rest:"N/A",notes:"Quads, IT band, glutes, upper back. Recovery and injury prevention."},
+    ],
+    cardio:null
+  },
+  { day:"Sunday", tag:"rest", color:"#6b7280", label:"Full Rest", focus:"Sleep, nutrition, recovery", exercises:[], cardio:null },
+];
+
+const LABS = [
+  {name:"Total Cholesterol",value:281,ref:"<200",unit:"mg/dL",status:"high",note:"Significantly elevated. Diet + exercise are first-line interventions."},
+  {name:"LDL Cholesterol",value:197,ref:"<100",unit:"mg/dL",status:"high",note:"≥190 may indicate familial hypercholesterolemia. Discuss with your doctor."},
+  {name:"HDL Cholesterol",value:46,ref:"≥40",unit:"mg/dL",status:"borderline",note:"Just above minimum. Aerobic exercise is the #1 way to raise HDL."},
+  {name:"Triglycerides",value:199,ref:"<150",unit:"mg/dL",status:"high",note:"Elevated. Cut refined carbs/sugar and increase cardio frequency."},
+  {name:"Testosterone",value:530,ref:"300–1000",unit:"ng/dL",status:"normal",note:"Solid mid-range. Supports good strength adaptation and recovery."},
+  {name:"Hematocrit",value:51.9,ref:"39.4–51.1",unit:"%",status:"borderline",note:"Slightly high — common on T. Stay well hydrated. Monitor with prescriber."},
+  {name:"Hemoglobin A1c",value:5.6,ref:"<5.7",unit:"%",status:"normal",note:"Excellent. No diabetes risk."},
+  {name:"Glucose",value:94,ref:"65–139",unit:"mg/dL",status:"normal",note:"Perfect."},
+  {name:"TSH",value:1.05,ref:"0.40–4.50",unit:"mIU/L",status:"normal",note:"Thyroid function normal."},
+];
+
+const LAB_ACTIONS = [
+  {label:"↓ LDL / Cholesterol",action:"4x/week post-lift cardio + soluble fiber + reduced saturated fat. Expect 10–15% reduction over 12 weeks."},
+  {label:"↓ Triglycerides",action:"Cardio is the most powerful TG-lowering intervention. Cut alcohol and refined carbs. Can drop 30–40% with consistency."},
+  {label:"↑ HDL",action:"Aerobic exercise is the #1 evidence-based HDL raiser. 20 min 4x/week should move you from 46 toward 55+ in 12 weeks."},
+  {label:"Hematocrit",action:"Stay heavily hydrated on shift (3–4L/day). Discuss T dose timing with prescriber. Cardio helps blood viscosity."},
+];
+
+const GUIDE_NODES = [
+  {title:"🎯 Your Starting Point",color:"#5b9de0",body:"Solid natural frame with good shoulder width and visible arm development. Body fat is concentrated in the lower abdomen and flanks — classic T-therapy redistribution pattern. Predictable and reversible. Your legs are lean. Estimated 22–25% body fat. With consistent training and right nutrition you're 4–5 months from a dramatically different midsection and 8–10 months from a genuinely impressive physique."},
+  {title:"🍽️ Nutrition (Lab-Informed)",color:"#22c55e",body:"Given your lipid panel, dietary changes are as important as training. Cut saturated fat — red meat max 2x/week, avoid butter, fried food, full-fat dairy. Add oatmeal daily — soluble fiber binds LDL. Fatty fish or fish oil 3x/week — omega-3s directly lower triglycerides. Cut or eliminate alcohol — major triglyceride driver. Hit 160–180g protein daily. Target ~2,600 calories on training days, ~2,100 on rest days."},
+  {title:"📈 Progressive Overload",color:"#f97316",body:"For 5-rep main lifts (squat, deadlift, bench, OHP): add 5 lbs when you complete all sets and reps cleanly. For 8–12 rep accessories: increase weight when the top of the rep range feels controlled and easy. Track every session in the Log tab — the log is the program. The previous weight shows automatically as a gold hint each time you log."},
+  {title:"🫀 Cardio Is Non-Negotiable",color:"#ef4444",body:"LDL 197 + triglycerides 199 together represent real cardiovascular risk. 20 minutes of moderate cardio (HR 130–145 bpm) post-lift, 4 days a week. Rowing machine is ideal — full body, low impact, excellent lipid profile response. Bike is second best. Over 12 consistent weeks this protocol is projected to raise HDL from 46 toward 55+ and drop triglycerides 30–40%."},
+  {title:"💊 Testosterone (530 ng/dL)",color:"#a855f7",body:"530 is solidly mid-range — a healthy, functional anabolic environment. You'll respond well to progressive overload and can expect noticeable strength gains within 4–6 weeks and visible muscle changes within 8–12 weeks with nutrition dialed in. Slightly elevated hematocrit (51.9%) means hydration is critical especially on 24-hour shifts. Drink 3–4L daily. Mention the lipid panel to your T prescriber — T therapy can contribute to LDL elevation."},
+];
+
+// ─── STORAGE ──────────────────────────────────────────────────────────────────
+const STORAGE_KEY = "ryan-workout-data";
+const PHOTO_KEY   = "ryan-photo-data";
+
+function loadData() {
+  try { const d = localStorage.getItem(STORAGE_KEY); return d ? JSON.parse(d) : {sessions:{},checkIns:{}}; }
+  catch(e) { return {sessions:{},checkIns:{}}; }
+}
+function saveData(d) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); } catch(e){} }
+function loadPhotos() {
+  try { const d = localStorage.getItem(PHOTO_KEY); return d ? JSON.parse(d) : []; }
+  catch(e) { return []; }
+}
+function savePhotos(arr) { try { localStorage.setItem(PHOTO_KEY, JSON.stringify(arr)); } catch(e){} }
+
+let DB = loadData();
+let PHOTOS = loadPhotos();
+
+// ─── HELPERS ──────────────────────────────────────────────────────────────────
+function today() { return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][new Date().getDay()]; }
+function dateKey() { return new Date().toISOString().split("T")[0]; }
+function sessionKey(d) { return `${dateKey()}-${d.day}`; }
+function isDone(d) { return !!DB.sessions[sessionKey(d)]; }
+
+function thisWeekStart() {
+  const d = new Date(); d.setDate(d.getDate() - d.getDay() + 1);
+  return d.toISOString().split("T")[0];
+}
+
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2500);
+}
+
+// ─── WEEK COUNT ───────────────────────────────────────────────────────────────
+function updateWeekCount() {
+  const ws = thisWeekStart();
+  const done = Object.values(DB.sessions).filter(s => s.date >= ws).length;
+  const target = PROGRAM.filter(d => d.tag !== "rest").length;
+  const el = document.getElementById("week-count");
+  if (el) { el.textContent = `${done}/${target}`; el.style.color = done >= target ? "#4caa38" : "#5b9de0"; }
+}
+
+// ─── TABS ─────────────────────────────────────────────────────────────────────
+let activeTab = "plan";
+let logDay = null;
+let openPlanDay = null;
+let confirmingClear = false;
+
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    activeTab = btn.dataset.tab;
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    document.querySelectorAll(".tab-pane").forEach(p => p.style.display = "none");
+    document.getElementById("tab-" + activeTab).style.display = "";
+    renderTab(activeTab);
+  });
+});
+
+function renderTab(t) {
+  if (t === "plan") renderPlan();
+  else if (t === "log") renderLog();
+  else if (t === "progress") renderProgress();
+  else if (t === "photos") renderPhotos();
+  else if (t === "labs") renderLabs();
+  else if (t === "guide") renderGuide();
+  updateWeekCount();
+}
+
+// ─── PLAN ─────────────────────────────────────────────────────────────────────
+function renderPlan() {
+  const list = document.getElementById("plan-list");
+  list.innerHTML = "";
+  PROGRAM.forEach(d => {
+    const isOpen = openPlanDay === d.day;
+    const done = isDone(d);
+    const isToday = d.day === today();
+
+    const wrap = document.createElement("div");
+    wrap.className = "card";
+    if (isOpen) wrap.style.border = `1px solid ${d.color}55`;
+
+    const hd = document.createElement("div");
+    hd.className = "card-hd";
+    hd.innerHTML = `
+      <div style="display:flex;align-items:center;gap:9px;">
+        <span class="tag" style="background:${d.color}20;border:1px solid ${d.color}44;color:${d.color}">${d.tag}</span>
+        <div>
+          <div class="day-name">
+            ${d.day}
+            ${isToday ? '<span class="badge-today">TODAY</span>' : ''}
+            ${done ? '<span style="color:#4caa38;font-size:12px;">✓</span>' : ''}
+          </div>
+          <div class="day-sub">${d.label}</div>
+        </div>
+      </div>
+      <span class="chevron${isOpen?' open':''}">▼</span>
+    `;
+    hd.addEventListener("click", () => {
+      openPlanDay = isOpen ? null : d.day;
+      renderPlan();
+    });
+
+    wrap.appendChild(hd);
+
+    if (isOpen) {
+      const body = document.createElement("div");
+      body.className = "card-body";
+
+      if (d.exercises.length === 0) {
+        body.innerHTML = `<p style="margin:0;color:var(--text3);font-size:12px;">Rest day. Sleep, eat well, recover. Growth happens here.</p>`;
+      } else {
+        let rows = d.exercises.map(ex => `
+          <tr>
+            <td style="padding:7px 5px;border-top:1px solid #14141e;vertical-align:top;">
+              <div class="ex-name">${ex.name}</div>
+              <div class="ex-notes">${ex.notes}</div>
+            </td>
+            <td class="td-center" style="padding:7px 5px;border-top:1px solid #14141e;vertical-align:top;">${ex.sets}</td>
+            <td class="td-center" style="padding:7px 5px;border-top:1px solid #14141e;vertical-align:top;">${ex.reps}</td>
+            <td class="td-rest" style="padding:7px 5px;border-top:1px solid #14141e;vertical-align:top;">${ex.rest}</td>
+          </tr>
+        `).join("");
+
+        const wu = WARMUPS[d.day];
+        const warmupHtml = wu ? `
+          <div class="warmup-box">
+            <button class="warmup-toggle" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'':'none';this.querySelector('span').textContent=this.nextElementSibling.style.display===''?'▲':'▼'">
+              🔥 Warm-Up Protocol <span>▼</span>
+            </button>
+            <div class="warmup-inner" style="display:none">
+              ${wu.map(w=>`<div class="warmup-row"><div class="warmup-name">${w.name}${w.sets?` <span class="warmup-sets">· ${w.sets}</span>`:''}</div><div class="warmup-note">${w.notes}</div></div>`).join('')}
+            </div>
+          </div>
+        ` : '';
+
+        body.innerHTML = `
+          <p style="margin:0 0 10px;font-size:10px;color:var(--text3);font-style:italic;">${d.focus}</p>
+          ${warmupHtml}
+          <table>
+            <thead><tr>
+              <th>Exercise</th><th>Sets</th><th>Reps</th><th>Rest</th>
+            </tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+          ${d.cardio ? `<div class="cardio-box"><div class="cardio-title">🫀 POST-LIFT CARDIO — ${d.cardio.duration} @ ${d.cardio.hr}</div><div class="cardio-notes">${d.cardio.notes}</div></div>` : ''}
+        `;
+
+        if (d.exercises.length > 0) {
+          const logBtn = document.createElement("button");
+          logBtn.className = "go-log-btn";
+          logBtn.style.cssText = `background:${d.color}18;border:1px solid ${d.color}44;color:${d.color};`;
+          logBtn.textContent = "Log This Workout →";
+          logBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            logDay = d;
+            document.querySelectorAll(".tab-btn").forEach(b => b.classList.toggle("active", b.dataset.tab === "log"));
+            document.querySelectorAll(".tab-pane").forEach(p => p.style.display = "none");
+            document.getElementById("tab-log").style.display = "";
+            activeTab = "log";
+            renderLog();
+          });
+          body.appendChild(logBtn);
+        }
+      }
+      wrap.appendChild(body);
+    }
+    list.appendChild(wrap);
+  });
+}
+
+// ─── LOG ──────────────────────────────────────────────────────────────────────
+let logWts = {}, logRps = {};
+let logMood=3, logEnergy=3, logSoreness=3, logSleep=7, logNote="";
+
+function lastWeight(exName, dayName) {
+  const all = Object.values(DB.sessions).sort((a,b) => b.date.localeCompare(a.date));
+  for (const s of all) {
+    if (s.dayName === dayName) {
+      const d = PROGRAM.find(p => p.day === dayName);
+      if (!d) continue;
+      const idx = d.exercises.findIndex(e => e.name === exName);
+      if (idx !== -1 && s.wts && s.wts[idx]) return s.wts[idx];
+    }
+  }
+  return null;
+}
+
+function renderLog() {
+  // Day selector
+  const sel = document.getElementById("day-selector");
+  sel.innerHTML = "";
+  PROGRAM.forEach(d => {
+    const btn = document.createElement("button");
+    btn.className = "log-day-btn" + (logDay?.day === d.day ? " active" : "");
+    if (logDay?.day === d.day) {
+      btn.style.cssText = `border-color:${d.color};background:${d.color}18;color:${d.color};`;
+    }
+    btn.textContent = (d.day === today() ? "🔥" : "") + d.day.slice(0,3);
+    btn.addEventListener("click", () => { logDay = d; logWts={}; logRps={}; renderLog(); });
+    sel.appendChild(btn);
+  });
+
+  const content = document.getElementById("log-content");
+  content.innerHTML = "";
+
+  if (!logDay) {
+    content.innerHTML = `<div class="card" style="padding:18px;text-align:center;color:var(--text3);font-size:12px;">Select a day above to start logging.</div>`;
+    return;
+  }
+
+  if (logDay.exercises.length === 0) {
+    content.innerHTML = `<div class="card" style="padding:20px;text-align:center;"><div style="font-size:28px;margin-bottom:6px;">😴</div><div style="font-weight:700;margin-bottom:4px;">Rest Day</div><div style="font-size:12px;color:var(--text3);">Sleep, eat, hydrate. Growth happens here.</div></div>`;
+    return;
+  }
+
+  const done = isDone(logDay);
+
+  // Workout card
+  const wCard = document.createElement("div");
+  wCard.className = "card";
+  wCard.style.marginBottom = "11px";
+
+  let exHtml = logDay.exercises.map((ex, i) => {
+    const prev = lastWeight(ex.name, logDay.day);
+    return `
+      <div style="margin-bottom:10px;">
+        <div class="ex-lbl">${ex.name}</div>
+        <div class="inline-row">
+          <input type="number" id="wt-${i}" placeholder="${prev ? 'prev: '+prev : 'lbs'}" class="${prev?'prev-hint':''}" value="${logWts[i]||''}">
+          <span style="font-size:10px;color:var(--text3);">lbs</span>
+          <input type="text" id="rp-${i}" placeholder="${ex.reps}" value="${logRps[i]||''}">
+          <span style="font-size:10px;color:var(--text3);">reps</span>
+          ${prev ? `<span class="prev-lbl">last: ${prev} lbs</span>` : ''}
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  const wu = WARMUPS[logDay.day];
+  const warmupLogHtml = wu ? `
+    <div class="warmup-box" style="margin-bottom:13px;">
+      <button class="warmup-toggle" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'':'none';this.querySelector('span').textContent=this.nextElementSibling.style.display===''?'▲':'▼'">
+        🔥 Warm-Up Protocol <span>▼</span>
+      </button>
+      <div class="warmup-inner" style="display:none">
+        ${wu.map(w=>`<div class="warmup-row"><div class="warmup-name">${w.name}${w.sets?` <span class="warmup-sets">· ${w.sets}</span>`:''}</div><div class="warmup-note">${w.notes}</div></div>`).join('')}
+      </div>
+    </div>
+  ` : '';
+
+  wCard.innerHTML = `
+    <div style="padding:10px 13px 4px;border-bottom:1px solid #13131e;display:flex;align-items:center;gap:9px;">
+      <span class="tag" style="background:${logDay.color}20;border:1px solid ${logDay.color}44;color:${logDay.color}">${logDay.tag}</span>
+      <span style="font-weight:700;font-size:12px;">${logDay.day} — ${logDay.label}</span>
+      ${done ? '<span class="logged-badge">✓ Logged today</span>' : ''}
+    </div>
+    <div style="padding:13px;">
+      <div style="font-size:10px;color:var(--text3);margin-bottom:10px;">Enter weight and reps. Previous values shown in gold.</div>
+      ${warmupLogHtml}
+      ${exHtml}
+      ${logDay.cardio ? `<div class="cardio-box"><div class="cardio-title">🫀 Post-Lift Cardio: ${logDay.cardio.duration} @ ${logDay.cardio.hr}</div><div class="cardio-notes" style="color:#3a5030;margin-top:2px;">Note cardio completion in your check-in below.</div></div>` : ''}
+      <button class="btn btn-blue" id="save-workout-btn" style="margin-top:13px;">✅ Save Workout</button>
+    </div>
+  `;
+  content.appendChild(wCard);
+
+  // Attach save
+  document.getElementById("save-workout-btn").addEventListener("click", () => {
+    const wts = {}, rps = {};
+    logDay.exercises.forEach((ex, i) => {
+      const w = document.getElementById("wt-"+i)?.value;
+      const r = document.getElementById("rp-"+i)?.value;
+      if (w) wts[i] = w;
+      if (r) rps[i] = r;
+    });
+    DB.sessions[sessionKey(logDay)] = { wts, rps, date: dateKey(), dayName: logDay.day };
+    saveData(DB);
+    updateWeekCount();
+    showToast("✅ Workout saved!");
+    renderLog();
+  });
+
+  // Check-in card
+  const ciCard = document.createElement("div");
+  ciCard.className = "card";
+  ciCard.style.padding = "13px";
+
+  const ratingHtml = (label, id, val, color) => `
+    <div style="margin-bottom:12px;">
+      <div style="font-size:10px;color:var(--text3);margin-bottom:6px;">${label} (1–5)</div>
+      <div class="rating-row">
+        ${[1,2,3,4,5].map(n => `<button class="rating-btn" data-group="${id}" data-val="${n}" style="${val===n?`border-color:${color};background:${color}22;color:${color}`:''}"">${n}</button>`).join('')}
+      </div>
+    </div>
+  `;
+
+  ciCard.innerHTML = `
+    <div style="font-weight:700;font-size:13px;margin-bottom:13px;color:#bbd;">Daily Check-In</div>
+    ${ratingHtml("Mood","mood",logMood,"#5b9de0")}
+    ${ratingHtml("Energy","energy",logEnergy,"#f97316")}
+    ${ratingHtml("Soreness","soreness",logSoreness,"#a855f7")}
+    <div style="margin-bottom:12px;">
+      <div style="font-size:10px;color:var(--text3);margin-bottom:6px;">Sleep last night (hours)</div>
+      <div class="rating-row">
+        ${[4,5,6,7,8,9,10].map(n => `<button class="rating-btn" data-group="sleep" data-val="${n}" style="${logSleep===n?'border-color:#22c55e;background:#22c55e22;color:#22c55e':''}">${n}</button>`).join('')}
+      </div>
+    </div>
+    <div style="font-size:10px;color:var(--text3);margin-bottom:6px;">Notes (PRs, cardio done, how shift went, diet, anything)</div>
+    <textarea id="ci-note" placeholder="e.g. Bench 185×5 — clean. Cardio done 22 min bike. Busy shift. 7 hrs sleep...">${logNote}</textarea>
+    <button class="btn btn-green" id="save-ci-btn">💬 Save Check-In</button>
+  `;
+  content.appendChild(ciCard);
+
+  // Rating listeners
+  ciCard.querySelectorAll(".rating-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const g = btn.dataset.group, v = parseInt(btn.dataset.val);
+      if (g==="mood") logMood=v;
+      else if (g==="energy") logEnergy=v;
+      else if (g==="soreness") logSoreness=v;
+      else if (g==="sleep") logSleep=v;
+      renderLog();
+    });
+  });
+
+  document.getElementById("save-ci-btn").addEventListener("click", () => {
+    logNote = document.getElementById("ci-note").value;
+    DB.checkIns[sessionKey(logDay)] = { mood:logMood, energy:logEnergy, soreness:logSoreness, sleep:logSleep, note:logNote, date:dateKey(), dayName:logDay.day };
+    saveData(DB);
+    logNote = "";
+    showToast("💬 Check-in saved!");
+    renderLog();
+  });
+}
+
+// ─── PROGRESS ─────────────────────────────────────────────────────────────────
+function renderProgress() {
+  const sessions = DB.sessions, cis = DB.checkIns;
+  const total = Object.keys(sessions).length;
+  const allCI = Object.values(cis);
+  const avgE = allCI.length ? (allCI.reduce((a,c)=>a+c.energy,0)/allCI.length).toFixed(1) : "—";
+  const avgS = allCI.length ? (allCI.reduce((a,c)=>a+c.sleep,0)/allCI.length).toFixed(1) : "—";
+  const ws = thisWeekStart();
+  const weekDone = Object.values(sessions).filter(s=>s.date>=ws).length;
+  const weekTarget = PROGRAM.filter(d=>d.tag!=="rest").length;
+
+  document.getElementById("stat-total").textContent = total;
+  document.getElementById("stat-week").textContent = `${weekDone}/${weekTarget}`;
+  document.getElementById("stat-week").style.color = weekDone>=weekTarget?"#4caa38":"#f97316";
+  document.getElementById("stat-energy").textContent = avgE;
+  document.getElementById("stat-sleep").textContent = avgS === "—" ? "—" : avgS + "h";
+
+  const cont = document.getElementById("progress-content");
+  cont.innerHTML = "";
+
+  // This week
+  const weekCard = document.createElement("div");
+  weekCard.className = "card";
+  weekCard.style.padding = "13px";
+  weekCard.innerHTML = `<div style="font-weight:700;font-size:12px;margin-bottom:11px;color:#bbd;">This Week</div>`;
+  PROGRAM.forEach(d => {
+    const done = isDone(d);
+    const isT = d.day === today();
+    const row = document.createElement("div");
+    row.className = "week-row";
+    row.innerHTML = `
+      <div style="display:flex;align-items:center;">
+        <span class="dot${done?' done':''}"></span>
+        <span style="font-size:12px;font-weight:${isT?700:400};color:${isT?'#ccd':'#4a5070'}">${d.day}${isT?' 🔥':''}</span>
+      </div>
+      <div style="display:flex;gap:7px;align-items:center;">
+        <span class="tag" style="background:${d.color}20;border:1px solid ${d.color}44;color:${d.color}">${d.tag}</span>
+        ${done ? '<span style="color:#4caa38;font-size:11px;">✓</span>' : d.cardio ? '<span style="font-size:9px;color:#cc5020;">+cardio</span>' : ''}
+      </div>
+    `;
+    weekCard.appendChild(row);
+  });
+  cont.appendChild(weekCard);
+
+  // Recent sessions
+  if (total > 0) {
+    const sCard = document.createElement("div");
+    sCard.className = "card";
+    sCard.style.padding = "13px";
+    sCard.innerHTML = `<div style="font-weight:700;font-size:12px;margin-bottom:11px;color:#bbd;">Recent Sessions</div>`;
+    Object.entries(sessions).sort((a,b)=>b[1].date.localeCompare(a[1].date)).slice(0,8).forEach(([k,s]) => {
+      const row = document.createElement("div");
+      row.className = "session-row";
+      row.innerHTML = `<span style="color:#9090cc;font-weight:600;">${s.dayName}</span><span style="color:var(--text3)">${s.date}</span>`;
+      sCard.appendChild(row);
+    });
+    cont.appendChild(sCard);
+  }
+
+  // Recent check-ins
+  if (allCI.length > 0) {
+    const cCard = document.createElement("div");
+    cCard.className = "card";
+    cCard.style.padding = "13px";
+    cCard.innerHTML = `<div style="font-weight:700;font-size:12px;margin-bottom:11px;color:#bbd;">Recent Check-Ins</div>`;
+    Object.entries(cis).sort((a,b)=>b[1].date.localeCompare(a[1].date)).slice(0,6).forEach(([k,c]) => {
+      const row = document.createElement("div");
+      row.className = "ci-row";
+      row.innerHTML = `
+        <div class="ci-meta">
+          <span style="font-size:10px;color:var(--text3)">${c.date} ${c.dayName}</span>
+          <span style="font-size:10px;color:#5b9de0">Mood ${c.mood}/5</span>
+          <span style="font-size:10px;color:#f97316">Energy ${c.energy}/5</span>
+          <span style="font-size:10px;color:#a855f7">Soreness ${c.soreness}/5</span>
+          <span style="font-size:10px;color:#22c55e">Sleep ${c.sleep}h</span>
+        </div>
+        ${c.note ? `<p class="ci-note">${c.note}</p>` : ''}
+      `;
+      cCard.appendChild(row);
+    });
+    cont.appendChild(cCard);
+  }
+
+  if (total===0 && allCI.length===0) {
+    const empty = document.createElement("div");
+    empty.className = "card";
+    empty.style.cssText = "padding:20px;text-align:center;color:var(--text3);font-size:12px;";
+    empty.textContent = "No data yet. Log your first workout to start tracking.";
+    cont.appendChild(empty);
+  }
+
+  // Data management
+  const dataCard = document.createElement("div");
+  dataCard.className = "card";
+  dataCard.style.padding = "13px";
+  dataCard.innerHTML = `
+    <div style="font-weight:700;font-size:12px;margin-bottom:8px;color:#bbd;">Data</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:11px;">${total} sessions and ${allCI.length} check-ins saved. Data persists in localStorage.</div>
+    <div id="clear-zone">
+      <button class="danger-btn" id="clear-btn">🗑️ Clear All Data</button>
+    </div>
+  `;
+  cont.appendChild(dataCard);
+
+  document.getElementById("clear-btn").addEventListener("click", () => {
+    const zone = document.getElementById("clear-zone");
+    zone.innerHTML = `
+      <p class="danger-confirm">Are you sure? This cannot be undone.</p>
+      <div class="confirm-row">
+        <button class="confirm-yes" id="confirm-yes">Yes, clear everything</button>
+        <button class="confirm-no" id="confirm-no">Cancel</button>
+      </div>
+    `;
+    document.getElementById("confirm-yes").addEventListener("click", () => {
+      DB = {sessions:{},checkIns:{}};
+      saveData(DB);
+      updateWeekCount();
+      showToast("🗑️ All data cleared.");
+      renderProgress();
+    });
+    document.getElementById("confirm-no").addEventListener("click", () => renderProgress());
+  });
+}
+
+// ─── PHOTOS ───────────────────────────────────────────────────────────────────
+let photoFiles = [null,null,null,null];
+
+function initPhotoSlots() {
+  const row = document.getElementById("photo-slots");
+  if (!row) return;
+  row.innerHTML = "";
+  for (let i=0; i<4; i++) {
+    const slot = document.createElement("div");
+    slot.className = "file-slot";
+    slot.innerHTML = `
+      <label for="photo-file-${i}">
+        <img id="photo-preview-${i}" class="file-preview">
+        <span id="photo-slot-lbl-${i}">Photo ${i+1}</span>
+      </label>
+      <input type="file" id="photo-file-${i}" accept="image/*">
+    `;
+    row.appendChild(slot);
+
+    document.getElementById(`photo-file-${i}`).addEventListener("change", function() {
+      const file = this.files[0];
+      if (!file) return;
+      photoFiles[i] = file;
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = document.getElementById(`photo-preview-${i}`);
+        const lbl = document.getElementById(`photo-slot-lbl-${i}`);
+        img.src = e.target.result;
+        img.style.display = "block";
+        lbl.style.display = "none";
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+}
+
+function renderPhotos() {
+  // Set default date
+  const dateInp = document.getElementById("photo-date");
+  if (dateInp && !dateInp.value) dateInp.value = dateKey();
+
+  initPhotoSlots();
+
+  const list = document.getElementById("photo-list");
+  list.innerHTML = "";
+
+  if (PHOTOS.length === 0) {
+    list.innerHTML = `<div class="card" style="padding:18px;text-align:center;color:var(--text3);font-size:12px;">No entries yet. Add your first progress photo above.</div>`;
+    return;
+  }
+
+  [...PHOTOS].reverse().forEach((entry, revIdx) => {
+    const realIdx = PHOTOS.length - 1 - revIdx;
+    const wrap = document.createElement("div");
+    wrap.className = "photo-entry";
+
+    const hd = document.createElement("div");
+    hd.className = "photo-hd";
+    hd.innerHTML = `
+      <div>
+        <div style="font-weight:700;font-size:13px;color:#ccd;">${entry.date}</div>
+        <div class="photo-meta">${entry.weight ? entry.weight + ' lbs' : ''}</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span style="font-size:10px;color:var(--text3)">${entry.photos.filter(Boolean).length} photo${entry.photos.filter(Boolean).length!==1?'s':''}</span>
+        <span class="chevron" id="photo-chev-${realIdx}">▼</span>
+      </div>
+    `;
+
+    const body = document.createElement("div");
+    body.id = `photo-body-${realIdx}`;
+    body.style.display = "none";
+
+    if (entry.photos.filter(Boolean).length > 0) {
+      const grid = document.createElement("div");
+      grid.className = "photo-grid";
+      entry.photos.forEach(src => {
+        if (src) {
+          const img = document.createElement("img");
+          img.src = src;
+          grid.appendChild(img);
+        }
+      });
+      body.appendChild(grid);
+    }
+
+    if (entry.notes) {
+      const noteDiv = document.createElement("div");
+      noteDiv.className = "photo-note";
+      noteDiv.textContent = entry.notes;
+      body.appendChild(noteDiv);
+    }
+
+    const delBtn = document.createElement("button");
+    delBtn.className = "danger-btn";
+    delBtn.style.cssText = "display:block;margin:0 13px 13px;";
+    delBtn.textContent = "🗑️ Delete Entry";
+    delBtn.addEventListener("click", () => {
+      PHOTOS.splice(realIdx, 1);
+      savePhotos(PHOTOS);
+      renderPhotos();
+    });
+    body.appendChild(delBtn);
+
+    hd.addEventListener("click", () => {
+      const isOpen = body.style.display !== "none";
+      body.style.display = isOpen ? "none" : "";
+      document.getElementById(`photo-chev-${realIdx}`).className = "chevron" + (isOpen ? "" : " open");
+    });
+
+    wrap.appendChild(hd);
+    wrap.appendChild(body);
+    list.appendChild(wrap);
+  });
+}
+
+async function savePhotoEntry() {
+  const date = document.getElementById("photo-date").value || dateKey();
+  const weight = document.getElementById("photo-weight").value;
+  const notes = document.getElementById("photo-notes").value;
+
+  // Convert files to base64
+  const photos = await Promise.all(photoFiles.map(f => {
+    if (!f) return Promise.resolve(null);
+    return new Promise(res => {
+      const r = new FileReader();
+      r.onload = e => res(e.target.result);
+      r.readAsDataURL(f);
+    });
+  }));
+
+  PHOTOS.push({ date, weight: weight || null, notes, photos });
+  savePhotos(PHOTOS);
+  photoFiles = [null,null,null,null];
+  document.getElementById("photo-date").value = dateKey();
+  document.getElementById("photo-weight").value = "";
+  document.getElementById("photo-notes").value = "";
+  initPhotoSlots();
+  renderPhotos();
+  showToast("📸 Photo entry saved!");
+}
+
+// ─── LABS ─────────────────────────────────────────────────────────────────────
+function renderLabs() {
+  const list = document.getElementById("labs-list");
+  list.innerHTML = LABS.map(l => `
+    <div class="lab-row">
+      <div style="flex:1">
+        <div class="lab-name ${l.status}">${l.name}</div>
+        <div class="lab-note">${l.note}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div class="lab-val ${l.status}">${l.value}${l.unit}</div>
+        <div class="lab-ref">ref: ${l.ref}</div>
+      </div>
+    </div>
+  `).join("");
+
+  document.getElementById("labs-actions").innerHTML = LAB_ACTIONS.map(a => `
+    <div style="padding:8px 0;border-bottom:1px solid #12121e;">
+      <div style="font-size:11px;font-weight:700;color:#9090d0;margin-bottom:3px;">${a.label}</div>
+      <div style="font-size:11px;color:#5a5a90;line-height:1.55;">${a.action}</div>
+    </div>
+  `).join("");
+}
+
+// ─── GUIDE ────────────────────────────────────────────────────────────────────
+function renderGuide() {
+  document.getElementById("guide-list").innerHTML = GUIDE_NODES.map(n => `
+    <div class="guide-card" style="background:#0f0f18;border:1px solid ${n.color}28;">
+      <div class="guide-title" style="color:${n.color}">${n.title}</div>
+      <p class="guide-body">${n.body}</p>
+    </div>
+  `).join("");
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+renderPlan();
+renderLabs();
+renderGuide();
+updateWeekCount();
+</script>
+</body>
+</html>
