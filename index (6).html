@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>KYP Workout Program</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;background:#4caf50;color:#0a0c14;min-height:100vh}
+#app{max-width:680px;margin:0 auto;box-shadow:0 0 40px rgba(0,0,0,.08)}
+
+/* HEADER */
+.hdr{background:#1c2333;padding:16px 15px 13px;border-bottom:1px solid #242d40}
+.hdr-top{display:flex;align-items:center;gap:11px}
+.hdr-title{font-family:'DM Sans',system-ui,sans-serif;font-size:22px;font-weight:800;letter-spacing:.3px;line-height:1.1;color:#fff}
+.hdr-sub{font-size:11px;color:#3a4a60;margin-top:2px}
+.week-badge{margin-left:auto;text-align:right;flex-shrink:0}
+.week-num{font-family:'DM Sans',system-ui,sans-serif;font-size:22px;font-weight:800;color:#fff}
+.week-lbl{font-size:9px;color:#8898b0;text-transform:uppercase;letter-spacing:.5px}
+.labs-alert{background:#2a1018;border:1px solid #5a2030;border-radius:8px;padding:8px 12px;margin-top:10px;font-size:11px;color:#e08090}
+
+/* WEEK STRIP */
+.week-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;padding:8px 10px;background:#43a047;border-bottom:1px solid #388e3c}
+.strip-day{text-align:center;padding:7px 2px 6px;border-radius:7px;border:1px solid #e4e8f0;background:#b8bdc6}
+.strip-day.done{background:#80c8a0;border-color:#50a878}
+.strip-day.today{border-color:#4a7fd4;background:#90acd8}
+.strip-day .sd-dow{font-size:9px;font-weight:700;color:#202840;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+.strip-day.today .sd-dow{color:#4a7fd4}
+.strip-day.done .sd-dow{color:#3a9060}
+.strip-day .sd-date{font-size:11px;font-weight:600;color:#6a748a;line-height:1}
+.strip-day.today .sd-date{color:#2a5cb8}
+.strip-day.done .sd-date{color:#28885a}
+.strip-day .sd-check{font-size:10px;margin-top:3px;color:#3a9060;font-weight:700}
+.strip-day.today .sd-check{color:#4a7fd4}
+
+/* TABS */
+.tabs{display:flex;background:#43a047;border-bottom:1px solid #388e3c;overflow-x:auto}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:1;min-width:0;padding:11px 4px;border:none;background:transparent;color:#3a4058;font-family:'Inter',system-ui,sans-serif;font-size:11px;font-weight:700;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+.tab.active{color:#2a5cb8;border-bottom:2px solid #2a5cb8}
+
+.body{padding:12px 13px 50px;background:#4caf50}
+
+/* CARDS */
+.card{background:#c8cdd6;border:1px solid #b0b5be;border-radius:10px;margin-bottom:8px;overflow:hidden}
+.card-hdr{padding:11px 13px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
+.tag{border-radius:4px;padding:2px 7px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;font-family:'DM Sans',system-ui,sans-serif}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{color:#3a4058;font-weight:700;text-align:left;padding:3px 5px 7px;font-family:'DM Sans',system-ui,sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:.4px}
+td{padding:6px 5px;border-top:1px solid #f0f2f5;vertical-align:top}
+.ex-name{font-weight:700;font-size:12px;color:#0a0c14}
+.ex-why{font-size:10px;color:#2a3450;margin-top:3px;line-height:1.4}
+.ex-how{font-size:10px;color:#2a3a60;margin-top:2px;line-height:1.4;font-style:italic}
+
+/* LOG INPUTS */
+.inp{width:56px;padding:5px 7px;background:#b8bdc6;border:1px solid #a0a4ac;border-radius:5px;color:#0a0c14;font-size:12px;font-family:'Inter',system-ui,sans-serif}
+.inp.gold{background:#d8c080;border-color:#b08010}
+.inp:focus{outline:none;border-color:#4a7fd4}
+.prev-hint{font-size:9px;color:#7a5800;font-style:italic;margin-top:2px}
+.check-wrap{display:flex;align-items:center;gap:8px;padding:4px 0}
+.check-wrap input[type=checkbox]{width:18px;height:18px;cursor:pointer;accent-color:#28885a}
+
+/* BUTTONS */
+.btn-primary{width:100%;padding:11px;border-radius:8px;border:none;background:#2a5cb8;color:#fff;font-family:'Inter',system-ui,sans-serif;font-weight:700;font-size:13px;cursor:pointer;margin-top:10px}
+.btn-primary:active{opacity:.88}
+.btn-sm{padding:7px 13px;border-radius:6px;border:none;cursor:pointer;font-family:'Inter',system-ui,sans-serif;font-weight:700;font-size:11px}
+.btn-day{padding:5px 9px;border-radius:6px;border:1px solid #d8dce8;background:#b8bdc6;color:#2a3050;font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',system-ui,sans-serif}
+.btn-day.active{border-color:var(--c);background:color-mix(in srgb,var(--c) 12%,white);color:var(--c)}
+
+/* CARDIO BOX */
+.cardio-box{background:#a8ccb8;border:1px solid #70a888;border-radius:8px;padding:10px 12px;margin-top:10px}
+.cardio-title{font-size:10px;font-weight:800;color:#0a4828;font-family:'DM Sans',system-ui,sans-serif;letter-spacing:.4px;margin-bottom:4px}
+.cardio-body{font-size:11px;color:#0e3828;line-height:1.5}
+
+/* WARMUP BOX */
+.warmup-box{background:#b4b8cc;border:1px solid #9098b4;border-radius:8px;padding:10px 12px;margin-bottom:10px}
+.warmup-title{font-size:10px;font-weight:800;color:#1a2870;font-family:'DM Sans',system-ui,sans-serif;letter-spacing:.4px;margin-bottom:6px}
+
+/* CALENDAR */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:8px}
+.cal-dow{text-align:center;font-size:9px;font-weight:700;color:#4a5068;padding:3px 0;text-transform:uppercase;letter-spacing:.3px}
+.cal-day{text-align:center;padding:6px 2px;border-radius:5px;cursor:pointer;font-size:12px;font-weight:600;color:#b0b8cc;border:1px solid transparent}
+.cal-day.has-data{color:#1e2a50;background:#f0f2fa;border-color:#d0d4e8}
+.cal-day.done{color:#28885a;background:#80c8a0;border-color:#50a878}
+.cal-day.selected{border-color:#4a7fd4;color:#2a5cb8;background:#90acd8}
+.cal-day.today-cell{color:#c08010;font-weight:700}
+.cal-day:hover{background:#4caf50}
+.cal-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.cal-nav button{background:#b8bdc6;border:1px solid #a0a4ac;border-radius:5px;color:#2a3460;padding:4px 10px;cursor:pointer;font-size:14px}
+.cal-month{font-family:'DM Sans',system-ui,sans-serif;font-weight:700;font-size:14px;color:#0e1428}
+
+/* STATS */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:12px}
+.stat{background:#c8cdd6;border:1px solid #b0b5be;border-radius:9px;padding:11px;text-align:center}
+.stat-num{font-family:'DM Sans',system-ui,sans-serif;font-size:24px;font-weight:800}
+.stat-lbl{font-size:9px;color:#3a4058;margin-top:2px;text-transform:uppercase;letter-spacing:.4px}
+
+/* PHOTOS */
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+.photo-thumb{aspect-ratio:3/4;border-radius:7px;object-fit:cover;width:100%;border:1px solid #e4e8f0;background:#f8f9fc;cursor:pointer}
+.photo-empty{aspect-ratio:3/4;border-radius:7px;border:1px dashed #d0d4e0;display:flex;align-items:center;justify-content:center;color:#c0c8d8;font-size:22px;background:#b8bdc6}
+.photo-date{font-size:9px;color:#3a4058;text-align:center;margin-top:3px}
+.photo-modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px}
+.photo-modal img{max-width:100%;max-height:90vh;border-radius:8px;object-fit:contain}
+
+/* LABS */
+.lab-row{padding:8px 13px;border-bottom:1px solid #f0f2f5;display:flex;align-items:flex-start;gap:10px}
+.lab-name{font-size:12px;font-weight:700}
+.lab-note{font-size:10px;color:#2a3450;margin-top:2px;line-height:1.35}
+.lab-val{font-family:'DM Sans',system-ui,sans-serif;font-size:14px;font-weight:800;text-align:right;flex-shrink:0}
+.lab-ref{font-size:9px;color:#4a5068;text-align:right}
+
+/* TOAST */
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#1a3a24;border:1px solid #3a7048;border-radius:9px;padding:9px 20px;font-size:13px;font-weight:700;color:#5dcc80;z-index:2000;white-space:nowrap;display:none;font-family:'Inter',system-ui,sans-serif}
+
+/* MISC */
+.section-lbl{font-family:'DM Sans',system-ui,sans-serif;font-weight:700;font-size:11px;color:#3a4058;text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px}
+.danger-btn{padding:7px 13px;background:#c8a8a8;border:1px solid #b08080;border-radius:6px;color:#c03030;font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',system-ui,sans-serif}
+.confirm-btn{padding:7px 13px;background:#c4a0a0;border:1px solid #a06060;border-radius:6px;color:#c02020;font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',system-ui,sans-serif}
+.cancel-btn{padding:7px 13px;background:#b8bdc6;border:1px solid #a0a4ac;border-radius:6px;color:#7080a0;font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',system-ui,sans-serif}
+p.note{font-size:11px;color:#2a3450;margin-bottom:10px;line-height:1.5}
+.done-badge{font-size:9px;color:#28885a;font-weight:800;background:#80c8a0;border:1px solid #50a878;border-radius:4px;padding:1px 6px;font-family:'DM Sans',system-ui,sans-serif;letter-spacing:.3px}
+.log-section-hdr{font-family:'DM Sans',system-ui,sans-serif;font-weight:800;font-size:13px;letter-spacing:.4px;color:#2a3450;padding:8px 13px 4px;border-bottom:1px solid #f0f2f5}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="hdr">
+    <div class="hdr-top">
+      <span style="font-size:24px">🔥</span>
+      <div>
+        <div class="hdr-title">KYP Workout Program</div>
+        
+      </div>
+      <div class="week-badge">
+        <div class="week-num" id="weekNum">0/6</div>
+        <div class="week-lbl">this week</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="week-strip" id="weekStrip"></div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('plan')">📋 Plan</button>
+    <button class="tab" onclick="showTab('log')">✍️ Log</button>
+    <button class="tab" onclick="showTab('progress')">📈 Progress</button>
+    <button class="tab" onclick="showTab('photos')">📸 Photos</button>
+    <button class="tab" onclick="showTab('labs')">🩸 Labs</button>
+  </div>
+
+  <div class="body">
+    <div id="tab-plan"></div>
+    <div id="tab-log" style="display:none"></div>
+    <div id="tab-progress" style="display:none"></div>
+    <div id="tab-photos" style="display:none"></div>
+    <div id="tab-labs" style="display:none"></div>
+  </div>
+</div>
+<div id="toast"></div>
+<div id="motivModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.75);z-index:3000;align-items:center;justify-content:center;padding:24px">
+  <div style="background:#1c2333;border-radius:16px;padding:28px 24px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5)">
+    <div id="motivEmoji" style="font-size:52px;margin-bottom:14px"></div>
+    <div id="motivTitle" style="font-family:'DM Sans',sans-serif;font-size:20px;font-weight:800;color:#fff;margin-bottom:10px;line-height:1.2"></div>
+    <div id="motivMsg" style="font-size:13px;color:#8898b0;line-height:1.7;margin-bottom:22px"></div>
+    <button onclick="closeMotiv()" style="width:100%;padding:12px;border-radius:9px;border:none;background:#2a5cb8;color:#fff;font-family:'Inter',sans-serif;font-weight:700;font-size:14px;cursor:pointer">Let's go 🔥</button>
+  </div>
+</div>
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+const STORAGE_KEY = 'ryan-workout-v3';
+
+const PROGRAM = [
+  {
+    day:'Monday', tag:'push', color:'#f97316',
+    label:'Push — Chest / Shoulders / Triceps',
+    focus:'Chest mass, pressing strength, upper body aesthetics',
+    warmup:[
+      {name:'Band Pull-Aparts', reps:'2×15', why:'Activates rear delts and sets scapular position before pressing — reduces shoulder injury risk.'},
+      {name:'Shoulder Circles + Arm Swings', reps:'30 sec each', why:'Synovial fluid to the shoulder joint. Especially important after a shift sitting in apparatus.'},
+      {name:'Push-Up (slow)', reps:'2×8', why:'Primes chest and triceps with bodyweight before loading the bar.'},
+    ],
+    exercises:[
+      {name:'Barbell Bench Press', sets:4, reps:'5', rest:'3 min', weighted:true,
+       why:'Primary mass builder for your chest goal. Heavy compound pressing builds the pec thickness that shows through a shirt.',
+       how:'Retract and depress scapula into bench. Plant feet. Bar to nipple line, slight chest touch, drive hard. Add 5 lbs when all reps are clean.'},
+      {name:'Incline Barbell Press', sets:3, reps:'8', rest:'2 min', weighted:true,
+       why:'Upper chest is what creates the "shelf" look — the part that shows in a t-shirt collar. Flat bench alone undertrains this.',
+       how:'30–45° incline. Same scapular setup. Don\'t let elbows flare past 75°. Control the descent.'},
+      {name:'Seated DB Shoulder Press', sets:3, reps:'10', rest:'90 sec', weighted:true,
+       why:'Overhead pressing strength is critical for pushing ceiling tiles, forcing doors, and working overhead in gear.',
+       how:'Sit upright, neutral spine. DBs at ear level. Press straight up, slight arc. Don\'t arch lower back.'},
+      {name:'Cable / DB Lateral Raises', sets:3, reps:'12–15', rest:'60 sec', weighted:true,
+       why:'Side delts create shoulder width — the V-taper starts here. Also helps stabilize the shoulder joint during carries.',
+       how:'Slight forward lean, slight elbow bend. Lead with elbow, not hand. Raise to shoulder height only. Go lighter than you think.'},
+      {name:'Tricep Rope Pushdown', sets:3, reps:'12', rest:'60 sec', weighted:true,
+       why:'Triceps make up 2/3 of arm size. Strong triceps also improve lockout on all pressing movements.',
+       how:'Elbows pinned at sides. Split the rope at the bottom. Full extension. Squeeze at bottom.'},
+      {name:'Hollow Body Hold', sets:3, reps:'30 sec', rest:'45 sec', weighted:false,
+       why:'Teaches deep core bracing that transfers to every heavy lift and every time you\'re carrying gear under load.',
+       how:'Lie flat, press lower back into floor, arms overhead, legs straight and raised. Hold without arching.'},
+    ],
+    cardio:{
+      duration:'20 min',hr:'130–145 bpm',
+      equipment:'Bike (preferred) or Treadmill incline walk',
+      protocol:'Bike: level 8–12, steady pace, never gasping. Treadmill: 3.0 mph, 8–10% incline. Monitor HR — stay in zone. This is Zone 2 aerobic work, not a sprint.',
+      why:'Post-lift cardio when glycogen is partially depleted forces fat metabolism. 4x/week in this zone is the #1 evidence-based intervention for raising HDL and lowering triglycerides.'
+    }
+  },
+  {
+    day:'Tuesday', tag:'pull', color:'#3b82f6',
+    label:'Pull — Back / Biceps / Rear Delts',
+    focus:'Back thickness, pulling strength, posture',
+    warmup:[
+      {name:'Cat-Cow', reps:'10 reps', why:'Mobilizes thoracic spine and lumbar. Critical before deadlifting.'},
+      {name:'Hip Hinge with Dowel', reps:'10 reps', why:'Grooves the deadlift pattern with no load — teaches flat back and hip push-back.'},
+      {name:'Band Rows or Face Pulls', reps:'2×15', why:'Primes the row pattern and activates mid-back before heavy loading.'},
+    ],
+    exercises:[
+      {name:'Barbell Deadlift', sets:4, reps:'5', rest:'3 min', weighted:true,
+       why:'The single most important strength lift for firefighters. Dragging a victim, pulling hose, lifting equipment — it all lives here.',
+       how:'Bar over mid-foot. Hip-width stance. Push floor away, don\'t yank. Flat back, hard brace. Controlled descent. Add 5 lbs when all reps clean.'},
+      {name:'Barbell Bent-Over Row', sets:4, reps:'8', rest:'2 min', weighted:true,
+       why:'Builds back thickness and counteracts the forward-hunched posture from wearing SCBA. Postural health = longer career.',
+       how:'Hip hinge to ~45°. Pull bar to lower chest/upper belly. Squeeze shoulder blades together at top. Control the eccentric.'},
+      {name:'Pull-Ups / Lat Pulldown', sets:3, reps:'8–10', rest:'90 sec', weighted:true,
+       why:'V-taper and pulling power. Pull-ups are the gold standard — lat pulldown is a valid substitute while building strength.',
+       how:'Full dead hang start. Drive elbows down and back. Chin over bar. No kipping. If doing pulldowns: same elbow path, lean back slightly.'},
+      {name:'Face Pulls', sets:3, reps:'15', rest:'60 sec', weighted:true,
+       why:'Rear delts and external rotators — the muscles that prevent shoulder impingement. Firefighters who skip these get hurt.',
+       how:'Cable at face height. Pull rope to forehead, elbows high and flared out. External rotate at the end. Light weight, perfect form.'},
+      {name:'Barbell / DB Curl', sets:3, reps:'12', rest:'60 sec', weighted:true,
+       why:'Arm size + grip strength. Grip is a limiter on victim drags, hose pulls, and ladder work.',
+       how:'Elbows stay at sides. Full extension at bottom, full curl at top. No swinging. Supinate wrist at top for peak contraction.'},
+      {name:'Plank Shoulder Tap', sets:3, reps:'10/side', rest:'45 sec', weighted:false,
+       why:'Anti-rotation core stability — the same demand as carrying a charged hose line or dragging a victim in an awkward position.',
+       how:'High plank position. Tap opposite shoulder without letting hips rotate or shift. Slow and controlled is harder and better.'},
+    ],
+    cardio:{
+      duration:'20 min', hr:'130–145 bpm',
+      equipment:'Rowing Machine (strongly preferred)',
+      protocol:'Start at rate 22–24 spm. Maintain consistent pace — not a sprint. If HR goes over 150, back off pace. Rowing is full-body and uniquely good for triglyceride reduction.',
+      why:'Rowing engages legs, back, and arms simultaneously — highest caloric output per minute of any cardio machine. Excellent for the lipid panel given your triglyceride number.'
+    }
+  },
+  {
+    day:'Wednesday', tag:'conditioning', color:'#ef4444',
+    label:'Conditioning — Firefighter Performance',
+    focus:'Job-specific aerobic power, functional strength',
+    warmup:[
+      {name:'5 min Easy Row or Bike', reps:'5 min', why:'Elevates heart rate gradually before high-intensity conditioning work. Skipping this risks cardiac stress.'},
+      {name:'World\'s Greatest Stretch', reps:'5/side', why:'Opens hips, thoracic spine, and hip flexors — everything that gets tight in bunker gear.'},
+      {name:'Leg Swings (front/side)', reps:'10 each direction', why:'Dynamic hip mobility before loaded carry and step-up work.'},
+    ],
+    exercises:[
+      {name:'Treadmill Incline Sprint', sets:5, reps:'2 min', rest:'90 sec', weighted:false,
+       why:'Most direct simulation of advancing a charged hose line — sustained high-effort push under load. Builds the aerobic power you need on the fire floor.',
+       how:'Set treadmill to 6–8% incline, speed 4–6 mph. Push hard for 2 min at an effort where talking is difficult. Rest 90 sec and repeat. If your gym has a Versaclimber or StairMaster, those work even better.'},
+      {name:'Farmer Carries', sets:4, reps:'50 ft', rest:'90 sec', weighted:true,
+       why:'Grip, core, shoulder stability under load. This is literally what you do — carrying tools, SCBA bottles, equipment.',
+       how:'Heaviest DBs you can carry with tall posture for 50 ft. Shoulders back, no lateral lean. Slow deliberate steps.'},
+      {name:'Box Step-Ups with Weight', sets:3, reps:'10/leg', rest:'60 sec', weighted:true,
+       why:'Stair climbing simulation under load. Every floor you climb in gear is a set of weighted step-ups.',
+       how:'Use 20–24" box. Hold DBs or wear vest. Drive through heel of lead foot. Full extension at top. Step down controlled.'},
+      {name:'Battle Ropes / KB Swings', sets:4, reps:'30 sec', rest:'60 sec', weighted:false,
+       why:'Trains explosive aerobic power — the sprint from apparatus to structure, or the 60-second burst of maximum exertion on a pull.',
+       how:'Battle ropes: alternate waves, hips loaded not just arms. KB swings: hip hinge drive, not squat. Let the bell float at top. Power from hips.'},
+      {name:'Rowing Machine', sets:1, reps:'15 min steady', rest:'N/A', weighted:false,
+       why:'Aerobic base work. Conditions the cardiovascular system at a sustainable output after the high-intensity work above.',
+       how:'HR 130–150 bpm. Rate 20–22 spm. This is your cooldown — not max effort. Focus on full leg drive and clean finish position.'},
+      {name:'Dead Bugs', sets:3, reps:'10/side', rest:'45 sec', weighted:false,
+       why:'Deep core activation targeting transverse abdominis — the muscle that creates the "flat" look and protects the lower back under load.',
+       how:'Lie on back, arms up, knees 90°. Extend opposite arm and leg toward floor WITHOUT letting lower back lift. Exhale as you extend.'},
+    ],
+    cardio:null
+  },
+  {
+    day:'Thursday', tag:'lower', color:'#22c55e',
+    label:'Lower Body — Legs / Glutes / Core',
+    focus:'Leg strength, core stability, lower ab development',
+    warmup:[
+      {name:'Leg Swing + Hip Circle', reps:'10 each direction', why:'Opens the hip capsule before loaded squat and hinge work.'},
+      {name:'Goblet Squat (light)', reps:'2×10', why:'Grooves squat pattern, opens hip flexors, warms up knees and ankles.'},
+      {name:'Glute Bridge', reps:'2×15', why:'Activates glutes before squatting — "turns on" the posterior chain so your glutes fire during the lift instead of defaulting to quads.'},
+    ],
+    exercises:[
+      {name:'Barbell Back Squat', sets:4, reps:'5', rest:'3 min', weighted:true,
+       why:'Builds total lower body strength for stair climbing, victim carries, and the explosive demands of emergency response.',
+       how:'Bar on traps, chest up, feet shoulder-width. Sit between heels to full depth. Drive knees out. Add 5 lbs when all reps clean.'},
+      {name:'Romanian Deadlift (RDL)', sets:3, reps:'10', rest:'2 min', weighted:true,
+       why:'Hamstrings are the most undertrained muscle in typical lifting — and the most important for hip hinge strength, sprinting, and pulling.',
+       how:'Soft knee bend. Push hips back, bar close to body. Feel a deep hamstring stretch. Drive hips forward to stand. Do NOT round lower back.'},
+      {name:'Barbell Hip Thrust', sets:3, reps:'12', rest:'90 sec', weighted:true,
+       why:'Peak glute activation — glutes drive every explosive movement: jumping onto apparatus, sprinting, stair climbing in gear.',
+       how:'Upper back on bench, bar across hip crease (pad it). Drive hips up until shin vertical. Squeeze glutes hard at top. Control descent.'},
+      {name:'Walking Lunges', sets:3, reps:'12/leg', rest:'90 sec', weighted:true,
+       why:'Unilateral leg strength and balance — critical for navigating obstacles, uneven terrain, and stairs in low-visibility conditions.',
+       how:'Long stride, front shin vertical. Rear knee just off floor. Stay tall — don\'t lean forward. Hold DBs for added challenge.'},
+      {name:'Hanging Leg Raises', sets:4, reps:'10–12', rest:'60 sec', weighted:false,
+       why:'Direct lower ab development — the primary aesthetic goal. Also builds grip strength and shoulder stability.',
+       how:'Dead hang from pull-up bar. Raise legs to 90° (bent knee) or straight. SLOW descent is where the ab work happens. No swinging.'},
+      {name:'Ab Wheel Rollout', sets:3, reps:'8–10', rest:'60 sec', weighted:false,
+       why:'Full-length core strength — trains the abs from stretched to contracted, which hollow holds and crunches cannot replicate.',
+       how:'Kneel on pad. Roll out until hips want to drop — stop there. Pull back with abs, not arms. Keep lower back from arching.'},
+    ],
+    cardio:{
+      duration:'20 min', hr:'130–145 bpm',
+      equipment:'Stationary Bike (preferred after leg day)',
+      protocol:'After heavy leg work, bike is significantly easier on fatigued quads than walking. Level 6–10, comfortable seated pace. This is not optional — it\'s your most important cardio session given your TG level.',
+      why:'Consistent post-leg cardio keeps metabolic rate elevated after the most taxing session of the week. Low impact on the joints while still driving the aerobic adaptations that lower LDL and triglycerides.'
+    }
+  },
+  {
+    day:'Friday', tag:'upper', color:'#a855f7',
+    label:'Upper Body — Strength + Volume',
+    focus:'Strength maintenance, hypertrophy volume, aesthetic work',
+    warmup:[
+      {name:'Band Pull-Aparts', reps:'2×15', why:'Rear delt and scapular activation before overhead press — shoulder prehab.'},
+      {name:'Overhead Stretch + T-Spine Rotation', reps:'10 each', why:'Opens thoracic spine for overhead press. Tight t-spine forces lumbar compensation which causes low back pain on OHP.'},
+      {name:'Scapular Push-Ups', reps:'15 reps', why:'Warms up serratus anterior — the muscle that keeps the shoulder blade flat during overhead press.'},
+    ],
+    exercises:[
+      {name:'Overhead Press (OHP)', sets:4, reps:'5', rest:'3 min', weighted:true,
+       why:'Overhead pressing strength is critical for firefighter tasks — forcing doors, pushing ceiling tiles, working overhead with tools in gear.',
+       how:'Bar from rack at shoulder height. Brace hard, squeeze glutes. Press bar up and slightly back over ears. No lumbar arch. Add 5 lbs when clean.'},
+      {name:'Weighted Pull-Ups', sets:4, reps:'6', rest:'2 min', weighted:true,
+       why:'Adding weight to pull-ups is one of the best indicators of pulling strength — directly transfers to ladder climbs and victim drags.',
+       how:'Use dip belt or hold DB with feet. Dead hang start. Drive elbows to hips. Full rep. Add weight when 6 feel controlled.'},
+      {name:'DB Incline Flye', sets:3, reps:'12', rest:'60 sec', weighted:true,
+       why:'Targets the stretch-loaded portion of the pec — the part that bench press misses. Creates chest fullness and width.',
+       how:'30° incline. Arms slightly bent, wide arc down to chest level — feel the stretch. Drive up with chest, not shoulders. Go lighter than bench.'},
+      {name:'Cable Row', sets:3, reps:'12', rest:'60 sec', weighted:true,
+       why:'Mid-back and rhomboid detail. Posture work — counteracts forward rounding from carrying packs and working bent over in structure.',
+       how:'Seated cable row, neutral grip. Drive elbows back past torso. Squeeze mid-back at peak. Control return — don\'t just let it fly forward.'},
+      {name:'Tricep Overhead Extension', sets:3, reps:'12', rest:'60 sec', weighted:true,
+       why:'Long head of the tricep — the biggest portion. This angle is the only way to fully stretch and develop the long head.',
+       how:'EZ bar or DB overhead. Elbows forward, upper arms stay still. Lower weight behind head, feel stretch, press back up.'},
+      {name:'Reverse Crunches', sets:4, reps:'15', rest:'45 sec', weighted:false,
+       why:'Lower ab emphasis. Most people train abs from top-down (crunches) and skip bottom-up movement — this fills the gap.',
+       how:'Lie flat, hands under lower back. Curl pelvis up, bringing knees to chest. SLOW descent — 3 seconds down — is where the work is.'},
+    ],
+    cardio:{
+      duration:'20 min', hr:'130–145 bpm',
+      equipment:'Rowing Machine or Bike',
+      protocol:'4th cardio session of the week. This one is medically non-negotiable given LDL 197 and TG 199. Row at rate 22 spm or bike at comfortable level. Do not skip this session.',
+      why:'Frequency is the key variable for lipid panel improvement — 4x/week outperforms 2x/week significantly. This session is what turns a good program into a cardiovascular intervention.'
+    }
+  },
+  {
+    day:'Saturday', tag:'recovery', color:'#14b8a6',
+    label:'Active Recovery + Mobility',
+    focus:'Movement, mobility, injury prevention',
+    warmup:null,
+    exercises:[
+      {name:'30 min Walk or Easy Bike', sets:1, reps:'30 min', rest:'N/A', weighted:false,
+       why:'Low-intensity movement accelerates recovery by increasing blood flow to sore muscles without adding fatigue.',
+       how:'HR under 120 bpm. Conversational pace. Outside preferred — sunlight and fresh air matter for sleep and mood. This still counts toward HDL improvement over time.'},
+      {name:'Hip Flexor Stretch (Kneeling Lunge)', sets:2, reps:'60 sec/side', rest:'N/A', weighted:false,
+       why:'Firefighters sit for hours between calls. Chronic hip flexor tightness causes anterior pelvic tilt, which makes belly fat look worse and causes low back pain.',
+       how:'Kneeling lunge. Back knee on floor. Push hips forward. Tuck pelvis slightly. Breathe into the stretch. Don\'t jam into pain.'},
+      {name:'Thoracic Spine Rotation', sets:2, reps:'10/side', rest:'N/A', weighted:false,
+       why:'SCBA and heavy gear compress and stiffen the thoracic spine. This undoes it.',
+       how:'Sit cross-legged or in lunge. Place hand behind head. Rotate elbow toward ceiling. Hold 2 sec. Think about rotating your chest, not your shoulder.'},
+      {name:'Foam Roll', sets:1, reps:'8 min', rest:'N/A', weighted:false,
+       why:'Self-myofascial release reduces muscle soreness and improves tissue quality over time.',
+       how:'30–45 sec per area: quads, IT band, glutes, upper back. Pause on tender spots. Breathe through it. Avoid rolling directly on lower back.'},
+    ],
+    cardio:null
+  },
+  {
+    day:'Sunday', tag:'rest', color:'#4a4a60',
+    label:'Full Rest',
+    focus:'Sleep, nutrition, recovery',
+    warmup:null,
+    exercises:[],
+    cardio:null
+  }
+];
+
+const LABS=[
+  {name:'Total Cholesterol',value:281,ref:'<200',unit:'mg/dL',status:'high',note:'Significantly elevated. Diet + consistent aerobic exercise are first-line interventions before medication.'},
+  {name:'LDL Cholesterol',value:197,ref:'<100',unit:'mg/dL',status:'high',note:'≥190 may indicate familial hypercholesterolemia — a genetic condition. Discuss with your doctor. Statin therapy may be warranted regardless of lifestyle.'},
+  {name:'HDL Cholesterol',value:46,ref:'≥40',unit:'mg/dL',status:'borderline',note:'Just above minimum. Aerobic exercise 4x/week is the #1 evidence-based way to raise HDL. Target: 55+ in 12 weeks.'},
+  {name:'Triglycerides',value:199,ref:'<150',unit:'mg/dL',status:'high',note:'Elevated. Cut refined carbs, sugar, and alcohol. Cardio frequency is the most powerful intervention.'},
+  {name:'Testosterone',value:530,ref:'300–1000',unit:'ng/dL',status:'normal',note:'Solid mid-range. Supports strength adaptation and recovery. Mention the lipid panel to your T prescriber — TRT can contribute to LDL elevation.'},
+  {name:'Hematocrit',value:51.9,ref:'39.4–51.1',unit:'%',status:'borderline',note:'Slightly high — common on TRT. Stay heavily hydrated especially on 24-hr shifts. 3–4L/day. Monitor with your prescriber.'},
+  {name:'Hemoglobin A1c',value:5.6,ref:'<5.7',unit:'%',status:'normal',note:'Excellent — no diabetes risk. Maintain with current diet and exercise habits.'},
+  {name:'Glucose',value:94,ref:'65–139',unit:'mg/dL',status:'normal',note:'Perfect.'},
+  {name:'TSH',value:1.05,ref:'0.40–4.50',unit:'mIU/L',status:'normal',note:'Thyroid function completely normal.'},
+];
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let data = {sessions:{}, photos:[]};
+let openDay = null;
+let logDay = null;
+let logDate = null; // YYYY-MM-DD
+let wts = {}, rps = {}, checks = {};
+let calYear, calMonth;
+let photoModal = null;
+let confirmClear = false;
+
+const now = new Date();
+const todayStr = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+calYear = now.getFullYear();
+calMonth = now.getMonth();
+
+// ─── STORAGE ─────────────────────────────────────────────────────────────────
+function loadData(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw) data = JSON.parse(raw);
+    if(!data.sessions) data.sessions={};
+    if(!data.photos) data.photos=[];
+  }catch(e){}
+}
+function saveData(){ try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data));}catch(e){} }
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function flash(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.style.display='block';
+  clearTimeout(t._timer);
+  t._timer=setTimeout(()=>t.style.display='none',2500);
+}
+
+const MOTIV = [
+  { emoji:'🔥', title:'Full week. No excuses.', msg:'6 days done. That\'s not a workout streak — that\'s a lifestyle. Your cardiovascular system is adapting, your lifts are getting stronger, and the compound effect is building. Rest tomorrow. Come back harder.' },
+  { emoji:'💪', title:'Week complete.', msg:'Every session this week was a deposit into your long-term health. LDL drops, HDL rises, strength builds — it all happens session by session. You\'re doing the work most people only talk about.' },
+  { emoji:'🏆', title:'6 for 6.', msg:'Perfect week. The version of you that shows up 6 days a week is the version that wins. Keep that standard. Next week, same thing.' },
+  { emoji:'⚡', title:'Full send.', msg:'This is what consistency looks like. Not motivation — discipline. You showed up when you didn\'t feel like it, when shifts were long, when rest sounded better. That\'s the difference.' },
+  { emoji:'🎯', title:'Week locked in.', msg:'Another week in the books. Your body is changing even when you can\'t see it yet — fat oxidation, cardiac output, muscle protein synthesis. The results are coming. Stay the course.' },
+  { emoji:'🚒', title:'Built different.', msg:'You\'re training like your life depends on it — because on the job, it might. 6 days this week. Your crew is lucky to have someone who takes their fitness this seriously.' },
+];
+
+let motivShown = false;
+
+function checkWeekComplete(wk){
+  if(wk >= 6 && !motivShown){
+    const seen = JSON.parse(localStorage.getItem('kyp-motiv-week')||'null');
+    const dow = new Date().getDay();
+    const ws = new Date(); ws.setDate(ws.getDate()-(dow===0?6:dow-1));
+    const wsStr = localDate(ws);
+    if(seen === wsStr) return;
+    localStorage.setItem('kyp-motiv-week', JSON.stringify(wsStr));
+    motivShown = true;
+    const m = MOTIV[Math.floor(Math.random()*MOTIV.length)];
+    document.getElementById('motivEmoji').textContent = m.emoji;
+    document.getElementById('motivTitle').textContent = m.title;
+    document.getElementById('motivMsg').textContent = m.msg;
+    const modal = document.getElementById('motivModal');
+    modal.style.display = 'flex';
+  }
+}
+
+function closeMotiv(){
+  document.getElementById('motivModal').style.display = 'none';
+}
+
+
+
+function localDate(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function sKey(dayName, dateStr){ return (dateStr||todayStr)+'-'+dayName; }
+
+function weekSessions(){
+  const d=new Date(); const dow=d.getDay();
+  const ws=new Date(d); ws.setDate(d.getDate()-(dow===0?6:dow-1));
+  const wsStr=localDate(ws);
+  return PROGRAM.filter(p=>p.tag!=='rest').map(p=>{
+    const keys=Object.keys(data.sessions).filter(k=>k.endsWith('-'+p.day)&&k.slice(0,10)>=wsStr);
+    return keys.length>0?1:0;
+  }).reduce((a,b)=>a+b,0);
+}
+
+function updateWeekBadge(){
+  const wk=weekSessions();
+  const el=document.getElementById('weekNum');
+  if(el){ el.textContent=wk+'/6'; el.style.color=wk>=6?'#4caa38':'#fff'; }
+  renderWeekStrip();
+  checkWeekComplete(wk);
+}
+
+function renderWeekStrip(){
+  const el=document.getElementById('weekStrip');
+  if(!el)return;
+  const d=new Date(); const dow=d.getDay();
+  const ws=new Date(d); ws.setDate(d.getDate()-(dow===0?6:dow-1));
+  let h='';
+  const dowLabels=['Mon','Tue','Wed','Thu','Fri','Sat'];
+  for(let i=0;i<6;i++){
+    const dt=new Date(ws); dt.setDate(ws.getDate()+i);
+    const dtStr=localDate(dt);
+    const prog=PROGRAM[i];
+    const done=Object.keys(data.sessions).some(k=>k===sKey(prog.day,dtStr)&&data.sessions[k].saved);
+    const isToday=dtStr===todayStr;
+    const mo=dt.getMonth()+1;
+    const dy=dt.getDate();
+    h+=`<div class="strip-day ${done?'done':''} ${isToday?'today':''}">
+      <div class="sd-dow">${dowLabels[i]}</div>
+      <div class="sd-date">${mo}/${dy}</div>
+      <div class="sd-check">${done?'✓':''}</div>
+    </div>`;
+  }
+  el.innerHTML=h;
+}
+
+// ─── TABS ─────────────────────────────────────────────────────────────────────
+function showTab(name){
+  ['plan','log','progress','photos','labs'].forEach(t=>{
+    document.getElementById('tab-'+t).style.display=t===name?'block':'none';
+  });
+  document.querySelectorAll('.tab').forEach((b,i)=>{
+    b.classList.toggle('active',['plan','log','progress','photos','labs'][i]===name);
+  });
+  if(name==='plan') renderPlan();
+  if(name==='log') renderLog();
+  if(name==='progress') renderProgress();
+  if(name==='photos') renderPhotos();
+  if(name==='labs') renderLabs();
+}
+
+// ─── PLAN TAB ────────────────────────────────────────────────────────────────
+function renderPlan(){
+  const el=document.getElementById('tab-plan');
+  let h='';
+  PROGRAM.forEach(d=>{
+    const isOpen=openDay===d.day;
+    const isToday=d.day===['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date().getDay()];
+    h+=`<div class="card" style="border-color:${isOpen?d.color+'55':'#e4e8f0'}">
+      <div class="card-hdr" onclick="togglePlanDay('${d.day}')">
+        <div style="display:flex;align-items:center;gap:9px">
+          <span class="tag" style="background:${d.color}1a;border:1px solid ${d.color}44;color:${d.color}">${d.tag}</span>
+          <div>
+            <div style="font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px">
+              ${d.day}
+              ${isToday?'<span class="done-badge" style="color:#1a3a88;background:#90acd8;border-color:#5080c0">TODAY</span>':""}
+            </div>
+            <div style="font-size:10px;color:#2e3050;margin-top:1px">${d.label}</div>
+          </div>
+        </div>
+        <span style="color:${d.color};font-size:13px">${isOpen?'▲':'▼'}</span>
+      </div>`;
+    if(isOpen){
+      h+=`<div style="border-top:1px solid #f0f2f5;padding:13px">`;
+      if(d.exercises.length===0){
+        h+=`<p style="color:#2a3450;font-size:12px">Full rest. Sleep well, eat well, hydrate (especially on T — hematocrit management). Growth and adaptation happen during recovery, not during training.</p>`;
+      } else {
+        // Warmup
+        if(d.warmup){
+          h+=`<div class="warmup-box"><div class="warmup-title">🔥 WARMUP</div>`;
+          d.warmup.forEach(w=>{
+            h+=`<div style="margin-bottom:7px"><div style="font-size:11px;font-weight:700;color:#7080b0">${w.name} <span style="color:#30406a;font-weight:400">— ${w.reps}</span></div><div class="ex-why">${w.why}</div></div>`;
+          });
+          h+=`</div>`;
+        }
+        // Exercises
+        h+=`<table><thead><tr><th>Exercise</th><th style="width:36px">Sets</th><th style="width:44px">Reps</th><th style="width:44px">Rest</th></tr></thead><tbody>`;
+        d.exercises.forEach(ex=>{
+          h+=`<tr><td>
+            <div class="ex-name">${ex.name}</div>
+            <div class="ex-why">${ex.why}</div>
+            <div class="ex-how">↳ ${ex.how}</div>
+          </td>
+          <td style="text-align:center;color:#7080a0;font-weight:600">${ex.sets}</td>
+          <td style="text-align:center;color:#7080a0">${ex.reps}</td>
+          <td style="text-align:center;color:#2e3050;font-size:10px">${ex.rest}</td></tr>`;
+        });
+        h+=`</tbody></table>`;
+        if(d.cardio){
+          h+=`<div class="cardio-box">
+            <div class="cardio-title">🫀 POST-LIFT CARDIO — ${d.cardio.duration} @ ${d.cardio.hr}</div>
+            <div style="font-size:11px;color:#3a6848;font-weight:700;margin-bottom:3px">${d.cardio.equipment}</div>
+            <div class="cardio-body">${d.cardio.protocol}</div>
+            <div style="font-size:10px;color:#224030;margin-top:4px;font-style:italic">${d.cardio.why}</div>
+          </div>`;
+        }
+        h+=`<button onclick="goLog('${d.day}')" style="margin-top:11px;padding:8px 15px;background:${d.color}14;border:1px solid ${d.color}44;border-radius:7px;color:${d.color};font-weight:700;font-size:11px;cursor:pointer;font-family:'Inter',system-ui,sans-serif">Log This Workout →</button>`;
+      }
+      h+=`</div>`;
+    }
+    h+=`</div>`;
+  });
+  el.innerHTML=h;
+}
+
+function togglePlanDay(day){ openDay=openDay===day?null:day; renderPlan(); }
+function goLog(dayName){ logDay=PROGRAM.find(d=>d.day===dayName); logDate=todayStr; wts={}; rps={}; checks={}; showTab('log'); }
+
+function renderLog(){
+  const el=document.getElementById('tab-log');
+  if(!el) return;
+  try {
+  let h='';
+
+  // Calendar
+  h+=buildCalendar();
+
+  // Day selector pills
+  h+=`<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px">`;
+  PROGRAM.forEach(d=>{
+    const isToday=d.day===['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date().getDay()];
+    const active=logDay&&logDay.day===d.day;
+    h+=`<button class="btn-day ${active?'active':''}" style="--c:${d.color}" onclick="selectLogDay('${d.day}')">${isToday?'🔥':''}${d.day.slice(0,3)}</button>`;
+  });
+  h+=`</div>`;
+
+  if(!logDay){
+    h+=`<div class="card" style="padding:18px;text-align:center;color:#2a3450;font-size:12px">Select a day above or tap a date on the calendar.</div>`;
+    el.innerHTML=h; return;
+  }
+
+  const key=sKey(logDay.day, logDate||todayStr);
+  const existing=data.sessions[key]||{};
+  const isLogged=!!existing.saved;
+  const dateLabel=logDate===todayStr?'Today':logDate||todayStr;
+
+  if(logDay.exercises.length===0){
+    h+=`<div class="card" style="padding:20px;text-align:center">
+      <div style="font-size:28px;margin-bottom:8px">&#128564;</div>
+      <div style="font-weight:700;margin-bottom:4px;font-size:16px">Rest Day</div>
+      <div style="font-size:12px;color:#2a3450">Sleep, eat, hydrate. Adaptation happens here.</div>
+    </div>`;
+    el.innerHTML=h; return;
+  }
+
+  h+=`<div class="card" style="margin-bottom:10px">
+    <div class="log-section-hdr" style="color:${logDay.color};border-color:${logDay.color}40">
+      ${logDay.day} &mdash; ${logDay.label}
+      <span style="float:right;font-size:10px;color:#2a3450;font-weight:400">${dateLabel}</span>
+      ${isLogged?'<span class="done-badge" style="float:right;margin-right:8px">&#10003; Logged</span>':""}
+    </div>
+    <div style="padding:12px">`;
+
+  logDay.exercises.forEach((ex,i)=>{
+    const prev=lastWeight(ex.name, logDay.day, logDate);
+    const wtVal=existing.wts&&existing.wts[i]!=null?existing.wts[i]:'';
+    const rpVal=existing.rps&&existing.rps[i]!=null?existing.rps[i]:'';
+
+    h+=`<div style="margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #d4d8e0">
+      <div style="font-size:12px;font-weight:700;color:#0a0c14;margin-bottom:4px">${ex.name}</div>
+      <div style="font-size:10px;color:#384058;margin-bottom:5px;line-height:1.4">${ex.why}</div>`;
+
+    if(ex.weighted){
+      h+=`<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <input type="number" id="wt_${i}" class="inp ${prev?'gold':''}" placeholder="${prev?'prev '+prev:'lbs'}" value="${wtVal}" style="width:60px">
+        <span style="font-size:10px;color:#2e3050">lbs</span>
+        <input type="text" id="rp_${i}" class="inp" placeholder="${ex.reps}" value="${rpVal}" style="width:60px">
+        <span style="font-size:10px;color:#2e3050">reps</span>
+      </div>`;
+      if(prev) h+=`<div style="font-size:9px;color:#7a5800;font-style:italic;margin-top:2px">Last logged: ${prev} lbs</div>`;
+    } else {
+      const ckd=existing.checks&&existing.checks[i];
+      h+=`<div style="display:flex;align-items:center;gap:8px;padding:4px 0">
+        <input type="checkbox" id="ck_${i}" ${ckd?'checked':''} style="width:18px;height:18px;cursor:pointer;accent-color:#28885a">
+        <label for="ck_${i}" style="font-size:11px;color:#2a3450;cursor:pointer">Done &mdash; ${ex.sets} sets &times; ${ex.reps}</label>
+      </div>`;
+    }
+    h+=`</div>`;
+  });
+
+  if(logDay.cardio){
+    const ckd=existing.checks&&existing.checks['cardio'];
+    h+=`<div style="background:#d4ede1;border:1px solid #90c8a8;border-radius:8px;padding:10px 12px;margin-bottom:8px">
+      <div style="font-size:10px;font-weight:800;color:#0a4828;margin-bottom:3px">&#128147; POST-LIFT CARDIO &mdash; ${logDay.cardio.duration} @ ${logDay.cardio.hr}</div>
+      <div style="font-size:11px;color:#1a6040;font-weight:600;margin-bottom:3px">${logDay.cardio.equipment}</div>
+      <div style="font-size:11px;color:#2a6048;line-height:1.5;margin-bottom:7px">${logDay.cardio.protocol}</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <input type="checkbox" id="ck_cardio" ${ckd?'checked':''} style="width:18px;height:18px;cursor:pointer;accent-color:#28885a">
+        <label for="ck_cardio" style="font-size:11px;color:#1a5030;cursor:pointer">Cardio done &#10003;</label>
+      </div>
+    </div>`;
+  }
+
+  h+=`<button class="btn-primary" onclick="saveWorkout()">&#10003; Save Workout</button>
+    </div></div>`;
+
+  el.innerHTML=h;
+  } catch(e) {
+    el.innerHTML=`<div class="card" style="padding:18px;color:#cc2020;font-size:12px">Log error: ${e.message}</div>`;
+    console.error('renderLog error:', e);
+  }
+}
+
+function selectLogDay(dayName){
+  logDay=PROGRAM.find(d=>d.day===dayName);
+  if(!logDate) logDate=todayStr;
+  wts={}; rps={}; checks={};
+  renderLog();
+}
+
+function lastWeight(exName, dayName, currentDate){
+  const keys=Object.keys(data.sessions)
+    .filter(k=>k.endsWith('-'+dayName)&&k.slice(0,10)<(currentDate||todayStr)&&data.sessions[k].saved)
+    .sort((a,b)=>b.localeCompare(a));
+  if(!keys.length) return null;
+  const sess=data.sessions[keys[0]];
+  if(!sess||!sess.wts) return null;
+  const prog=PROGRAM.find(d=>d.day===dayName);
+  if(!prog) return null;
+  const idx=prog.exercises.findIndex(e=>e.name===exName);
+  return sess.wts[idx]||null;
+}
+
+function saveWorkout(){
+  if(!logDay||logDay.exercises.length===0) return;
+  const key=sKey(logDay.day, logDate||todayStr);
+  // Collect values directly from DOM at save time
+  const savedWts={};
+  const savedRps={};
+  const savedChecks={};
+  logDay.exercises.forEach((ex,i)=>{
+    if(ex.weighted){
+      const wtEl=document.getElementById('wt_'+i);
+      const rpEl=document.getElementById('rp_'+i);
+      if(wtEl&&wtEl.value) savedWts[i]=wtEl.value;
+      if(rpEl&&rpEl.value) savedRps[i]=rpEl.value;
+    } else {
+      const ckEl=document.getElementById('ck_'+i);
+      if(ckEl) savedChecks[i]=ckEl.checked;
+    }
+  });
+  if(logDay.cardio){
+    const cEl=document.getElementById('ck_cardio');
+    if(cEl) savedChecks['cardio']=cEl.checked;
+  }
+  data.sessions[key]={wts:savedWts,rps:savedRps,checks:savedChecks,date:logDate||todayStr,dayName:logDay.day,saved:true};
+  saveData();
+  updateWeekBadge();
+  flash('✅ Workout saved!');
+  renderLog();
+}
+
+// ─── CALENDAR ─────────────────────────────────────────────────────────────────
+function buildCalendar(){
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const firstDay=new Date(calYear,calMonth,1).getDay();
+  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  const days=['Su','Mo','Tu','We','Th','Fr','Sa'];
+
+  let h=`<div class="card" style="padding:12px;margin-bottom:10px">
+    <div class="cal-nav">
+      <button onclick="calPrev()">‹</button>
+      <span class="cal-month">${months[calMonth]} ${calYear}</span>
+      <button onclick="calNext()">›</button>
+    </div>
+    <div class="cal-grid">`;
+  days.forEach(d=>{ h+=`<div class="cal-dow">${d}</div>`; });
+  for(let i=0;i<firstDay;i++) h+=`<div></div>`;
+  for(let d=1;d<=daysInMonth;d++){
+    const dateStr=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const hasSess=Object.keys(data.sessions).some(k=>k.startsWith(dateStr)&&data.sessions[k].saved);
+    const isToday=dateStr===todayStr;
+    const isSel=dateStr===(logDate||todayStr)&&logDay;
+    h+=`<div class="cal-day ${hasSess?'done':''} ${isToday?'today-cell':''} ${isSel?'selected':''}" onclick="calSelectDate('${dateStr}')">${d}</div>`;
+  }
+  h+=`</div></div>`;
+  return h;
+}
+
+function calPrev(){ calMonth--; if(calMonth<0){calMonth=11;calYear--;} renderLog(); }
+function calNext(){ calMonth++; if(calMonth>11){calMonth=0;calYear++;} renderLog(); }
+
+function calSelectDate(dateStr){
+  logDate=dateStr;
+  // Auto-detect day of week
+  const dt=new Date(dateStr+'T12:00:00');
+  const dayNames=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const dayName=dayNames[dt.getDay()];
+  logDay=PROGRAM.find(d=>d.day===dayName)||null;
+  wts={}; rps={}; checks={};
+  renderLog();
+}
+
+// ─── PROGRESS TAB ─────────────────────────────────────────────────────────────
+function renderProgress(){
+  const el=document.getElementById('tab-progress');
+  const total=Object.values(data.sessions).filter(s=>s.saved).length;
+  const wk=weekSessions();
+
+  // Build per-lift PRs
+  const prMap={};
+  PROGRAM.forEach(d=>{
+    d.exercises.filter(e=>e.weighted).forEach(ex=>{
+      const allKeys=Object.keys(data.sessions)
+        .filter(k=>k.endsWith('-'+d.day)&&data.sessions[k].saved&&data.sessions[k].wts);
+      let pr=0;
+      allKeys.forEach(k=>{
+        const s=data.sessions[k];
+        const idx=d.exercises.indexOf(ex);
+        const w=parseFloat(s.wts[idx]);
+        if(!isNaN(w)&&w>pr) pr=w;
+      });
+      if(pr>0) prMap[ex.name]=pr;
+    });
+  });
+
+  let h=`<p class="note">Training history, PRs, and trends. Data stored in your browser.</p>
+  <div class="stat-grid">
+    <div class="stat"><div class="stat-num" style="color:#6090d0">${total}</div><div class="stat-lbl">Total Sessions</div></div>
+    <div class="stat"><div class="stat-num" style="color:${wk>=6?'#4caa38':'#f97316'}">${wk}/6</div><div class="stat-lbl">This Week</div></div>
+    <div class="stat"><div class="stat-num" style="color:#a855f7">${Object.keys(prMap).length}</div><div class="stat-lbl">Lifts Tracked</div></div>
+  </div>`;
+
+  // This week
+  h+=`<div class="card" style="padding:13px;margin-bottom:8px">
+    <div class="section-lbl">This Week</div>`;
+  const todayName=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date().getDay()];
+  const dow=new Date().getDay();
+  const ws=new Date(); ws.setDate(ws.getDate()-(dow===0?6:dow-1));
+  const wsStr=localDate(ws);
+
+  PROGRAM.filter(p=>p.tag!=='rest').forEach(d=>{
+    // find if done this week
+    const done=Object.keys(data.sessions).some(k=>k.endsWith('-'+d.day)&&k.slice(0,10)>=wsStr&&data.sessions[k].saved);
+    h+=`<div style="display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f0f2f5">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="width:6px;height:6px;border-radius:50%;background:${done?'#4caa38':'#202030'};display:inline-block"></span>
+        <span style="font-size:12px;font-weight:${d.day===todayName?700:400};color:${d.day===todayName?'#c0c4e0':'#404060'}">${d.day}${d.day===todayName?' 🔥':''}</span>
+      </div>
+      <div style="display:flex;gap:7px;align-items:center">
+        <span class="tag" style="background:${d.color}1a;border:1px solid ${d.color}44;color:${d.color}">${d.tag}</span>
+        ${done?'<span style="color:#4caa38;font-size:11px">✓</span>':(d.cardio?'<span style="font-size:9px;color:#883010">+cardio</span>':'')}
+      </div>
+    </div>`;
+  });
+  h+=`</div>`;
+
+  // PRs
+  if(Object.keys(prMap).length>0){
+    h+=`<div class="card" style="padding:13px;margin-bottom:8px"><div class="section-lbl">Personal Records</div>`;
+    Object.entries(prMap).forEach(([name,w])=>{
+      h+=`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f0f2f5;font-size:12px">
+        <span style="color:#1e2a50">${name}</span>
+        <span style="color:#f0a030;font-weight:700;font-family:'DM Sans',system-ui,sans-serif">${w} lbs</span>
+      </div>`;
+    });
+    h+=`</div>`;
+  }
+
+  // Recent sessions
+  const recentKeys=Object.keys(data.sessions).filter(k=>data.sessions[k].saved).sort((a,b)=>b.localeCompare(a)).slice(0,10);
+  if(recentKeys.length>0){
+    h+=`<div class="card" style="padding:13px;margin-bottom:8px"><div class="section-lbl">Recent Sessions</div>`;
+    recentKeys.forEach(k=>{
+      const s=data.sessions[k];
+      h+=`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f0f2f5;font-size:11px">
+        <span style="color:#2a3460;font-weight:600">${s.dayName}</span>
+        <span style="color:#3a4058">${s.date}</span>
+      </div>`;
+    });
+    h+=`</div>`;
+  }
+
+  if(total===0){
+    h+=`<div class="card" style="padding:18px;text-align:center;color:#2a3450;font-size:12px">No sessions logged yet. Hit the Log tab to get started.</div>`;
+  }
+
+  // Data management
+  h+=`<div class="card" style="padding:13px">
+    <div class="section-lbl">Data Management</div>
+    <div style="font-size:11px;color:#2a3450;margin-bottom:10px">${total} sessions saved locally. Data is stored in your browser's localStorage.</div>
+    <div id="clearArea">
+      <button class="danger-btn" onclick="showClearConfirm()">🗑️ Clear All Data</button>
+    </div>
+  </div>`;
+
+  el.innerHTML=h;
+}
+
+function showClearConfirm(){
+  document.getElementById('clearArea').innerHTML=`
+    <div style="font-size:11px;color:#cc4040;margin-bottom:8px">This will delete all sessions and photos. Cannot be undone.</div>
+    <div style="display:flex;gap:8px">
+      <button class="confirm-btn" onclick="clearAll()">Yes, clear everything</button>
+      <button class="cancel-btn" onclick="renderProgress()">Cancel</button>
+    </div>`;
+}
+
+function clearAll(){
+  data={sessions:{},photos:[]};
+  saveData(); updateWeekBadge();
+  flash('🗑️ All data cleared.');
+  renderProgress();
+}
+
+// ─── PHOTOS TAB ───────────────────────────────────────────────────────────────
+function renderPhotos(){
+  const el=document.getElementById('tab-photos');
+  const photos=data.photos||[];
+
+  let h=`<p class="note">Track your visual progress over time. Photos are stored locally in your browser.</p>
+  <div style="display:flex;gap:8px;margin-bottom:12px">
+    <label style="flex:1;padding:10px;background:#b0bcd8;border:1px solid #8898c0;border-radius:8px;text-align:center;cursor:pointer;font-size:12px;color:#2a5cb8;font-weight:700;font-family:'Inter',system-ui,sans-serif">
+      📷 Add Photo
+      <input type="file" accept="image/*" capture="environment" style="display:none" onchange="addPhoto(event)">
+    </label>
+    <label style="flex:1;padding:10px;background:#b0bcd8;border:1px solid #8898c0;border-radius:8px;text-align:center;cursor:pointer;font-size:12px;color:#2a5cb8;font-weight:700;font-family:'Inter',system-ui,sans-serif">
+      🖼️ Upload from Gallery
+      <input type="file" accept="image/*" style="display:none" onchange="addPhoto(event)">
+    </label>
+  </div>`;
+
+  if(photos.length===0){
+    h+=`<div class="card" style="padding:30px;text-align:center;color:#28283a;font-size:13px">
+      <div style="font-size:36px;margin-bottom:10px">📸</div>
+      No progress photos yet. Take your first one above.
+    </div>`;
+  } else {
+    // oldest first label
+    h+=`<div class="photo-grid">`;
+    photos.slice().reverse().forEach((p,ri)=>{
+      const i=photos.length-1-ri;
+      const isOldest=(i===0);
+      const label=isOldest?'<span style="font-size:9px;font-weight:700;color:#c08010;background:#2a1a00;border-radius:3px;padding:1px 5px">START</span>':
+        photos.length>1?'<span style="font-size:9px;color:#4a6080;cursor:pointer" onclick="viewPhoto('+i+')">vs start →</span>':'';
+      h+=`<div>
+        <img class="photo-thumb" src="${p.data}" onclick="viewPhoto(${i})" alt="Progress photo">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:3px">
+          <div class="photo-date">${p.date}</div>
+          ${label}
+        </div>
+        <div style="text-align:center;margin-top:1px"><button onclick="deletePhoto(${i})" style="background:none;border:none;color:#7a3040;font-size:10px;cursor:pointer;font-family:'Inter',system-ui,sans-serif">✕</button></div>
+      </div>`;
+    });
+    h+=`</div>`;
+
+    if(photos.length>=2){
+      const daysDiff=Math.round((new Date(photos[photos.length-1].date)-new Date(photos[0].date))/(1000*60*60*24));
+      h+=`<div class="card" style="padding:12px;margin-top:10px">
+        <div class="section-lbl">Progress Timeline</div>
+        <div style="font-size:11px;color:#2a3450;line-height:1.6">
+          ${photos.length} photos · ${daysDiff} days logged · First: ${photos[0].date} · Latest: ${photos[photos.length-1].date}.<br>
+          Tap any photo to compare it side-by-side with your starting point.
+        </div>
+      </div>`;
+    }
+  }
+
+  el.innerHTML=h;
+}
+
+function addPhoto(event){
+  const file=event.target.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    if(!data.photos) data.photos=[];
+    // Compress before storing
+    const img=new Image();
+    img.onload=function(){
+      const canvas=document.createElement('canvas');
+      const MAX=800;
+      let w=img.width, h=img.height;
+      if(w>h&&w>MAX){h=h*(MAX/w);w=MAX;}
+      else if(h>MAX){w=w*(MAX/h);h=MAX;}
+      canvas.width=w; canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      const compressed=canvas.toDataURL('image/jpeg',0.7);
+      data.photos.push({data:compressed,date:todayStr});
+      saveData();
+      flash('📸 Photo saved!');
+      renderPhotos();
+    };
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function viewPhoto(i){
+  const photos=data.photos;
+  const p=photos[i];
+  if(!p) return;
+  const oldest=photos[0];
+  const isOldest=(i===0);
+  const showCompare=photos.length>1&&!isOldest;
+  const daysDiff=showCompare?Math.round((new Date(p.date)-new Date(oldest.date))/(1000*60*60*24)):0;
+
+  let modal=document.createElement('div');
+  modal.className='photo-modal';
+  modal.style.cssText='display:flex;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.9);z-index:1000;align-items:center;justify-content:center;padding:16px;overflow-y:auto';
+
+  if(showCompare){
+    modal.innerHTML=`
+      <div style="width:100%;max-width:600px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+          <div style="text-align:center">
+            <div style="font-size:10px;font-weight:700;color:#6080a0;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Starting Point</div>
+            <img src="${oldest.data}" style="width:100%;border-radius:8px;object-fit:cover;aspect-ratio:3/4">
+            <div style="font-size:11px;color:#6080a0;margin-top:5px">${oldest.date}</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:10px;font-weight:700;color:#4caa38;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Now — Day ${daysDiff}</div>
+            <img src="${p.data}" style="width:100%;border-radius:8px;object-fit:cover;aspect-ratio:3/4">
+            <div style="font-size:11px;color:#6080a0;margin-top:5px">${p.date}</div>
+          </div>
+        </div>
+        <div style="background:#1c2333;border-radius:10px;padding:12px 14px;margin-bottom:12px;text-align:center">
+          <div style="font-size:12px;color:#8898b0;line-height:1.6">
+            <strong style="color:#fff">${daysDiff} days</strong> of training between these photos.
+            ${daysDiff>=42?'<br>Visible body composition changes are well underway at this point. Keep going.':daysDiff>=21?'<br>Early adaptation phase — strength is building even if the mirror is slow to show it.':'<br>Early days — stay consistent and the changes will come.'}
+          </div>
+        </div>
+        <button onclick="this.closest('.photo-modal').remove()" style="width:100%;padding:11px;border-radius:8px;border:none;background:#2a5cb8;color:#fff;font-family:'Inter',sans-serif;font-weight:700;font-size:13px;cursor:pointer">Close</button>
+      </div>`;
+  } else {
+    modal.innerHTML=`
+      <div style="text-align:center;max-width:400px;width:100%">
+        <div style="font-size:10px;font-weight:700;color:#6080a0;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">${isOldest?'Starting Point':p.date}</div>
+        <img src="${p.data}" style="max-width:100%;max-height:70vh;border-radius:8px;object-fit:contain">
+        <div style="font-size:11px;color:#6080a0;margin-top:8px">${p.date}</div>
+        <button onclick="this.closest('.photo-modal').remove()" style="margin-top:12px;width:100%;padding:11px;border-radius:8px;border:none;background:#2a5cb8;color:#fff;font-family:'Inter',sans-serif;font-weight:700;font-size:13px;cursor:pointer">Close</button>
+      </div>`;
+  }
+  document.body.appendChild(modal);
+}
+
+function deletePhoto(i){
+  if(!confirm('Remove this photo?')) return;
+  data.photos.splice(i,1);
+  saveData();
+  flash('Photo removed.');
+  renderPhotos();
+}
+
+// ─── LABS TAB ─────────────────────────────────────────────────────────────────
+function renderLabs(){
+  const el=document.getElementById('tab-labs');
+  let h=`<div style="background:#0f0608;border:1px solid #881828;border-radius:9px;padding:11px 14px;margin-bottom:12px">
+    <div style="font-weight:700;font-size:12px;color:#cc3050;margin-bottom:4px;font-family:'DM Sans',system-ui,sans-serif;letter-spacing:.3px">⚠️ MEDICAL FOLLOW-UP REQUIRED</div>
+    <p style="margin:0;font-size:11px;color:#883040;line-height:1.6">LDL 197 meets the threshold for familial hypercholesterolemia evaluation. Hematocrit slightly elevated (common on TRT). Discuss with your physician and T prescriber. This is not medical advice.</p>
+  </div>
+  <div class="card" style="padding:0;margin-bottom:10px">
+    <div style="padding:9px 13px 7px;border-bottom:1px solid #f0f2f5"><span style="font-family:'DM Sans',system-ui,sans-serif;font-weight:700;font-size:13px;color:#1e2a50">Quest Diagnostics — 02/16/2026</span></div>`;
+
+  LABS.forEach(l=>{
+    const c=l.status==='high'?'#cc4040':l.status==='borderline'?'#d09020':'#3aaa50';
+    h+=`<div class="lab-row">
+      <div style="flex:1"><div class="lab-name" style="color:${c}">${l.name}</div><div class="lab-note">${l.note}</div></div>
+      <div><div class="lab-val" style="color:${c}">${l.value}${l.unit}</div><div class="lab-ref">ref: ${l.ref}</div></div>
+    </div>`;
+  });
+  h+=`</div>
+
+  <div class="card" style="padding:13px">
+    <div class="section-lbl" style="margin-bottom:10px">How This Program Addresses Your Labs</div>`;
+
+  [{label:'↓ LDL / Cholesterol',action:'4x/week post-lift cardio (Zone 2, 20 min) + daily oatmeal for soluble fiber + reduce saturated fat. Expect 10–15% LDL reduction over 12 weeks. With LDL at 197 your doctor may recommend a statin regardless — don\'t resist that conversation.'},
+   {label:'↓ Triglycerides',action:'Cardio is the single most powerful triglyceride-lowering intervention that exists. Cut alcohol and refined carbs/sugar. With consistent cardio 4x/week TG can drop 30–40% in 12 weeks.'},
+   {label:'↑ HDL',action:'Aerobic exercise is the #1 evidence-based HDL raiser. 20 min at 130–145 bpm, 4x/week. Target is moving you from 46 toward 55+ over 3 months. Nothing raises HDL faster than cardio frequency.'},
+   {label:'Hematocrit (TRT management)',action:'3–4L of water daily, especially on 24-hr shifts. Cardio improves plasma volume which dilutes hematocrit. Discuss with your T prescriber — dose timing or frequency adjustments can help.'},
+  ].forEach(item=>{
+    h+=`<div style="padding:7px 0;border-bottom:1px solid #f0f2f5">
+      <div style="font-size:11px;font-weight:700;color:#3a4a80;margin-bottom:3px;font-family:'DM Sans',system-ui,sans-serif;letter-spacing:.3px">${item.label}</div>
+      <div style="font-size:11px;color:#5060a0;line-height:1.5">${item.action}</div>
+    </div>`;
+  });
+  h+=`</div>`;
+  el.innerHTML=h;
+}
+
+// ─── INIT ──────────────────────────────────────────────────────────────────────
+window.onerror = function(msg, src, line, col, err) {
+  document.body.innerHTML = '<div style="padding:20px;font-family:sans-serif;background:#fff;color:#c00;font-size:14px"><strong>Error:</strong> ' + msg + '<br>Line: ' + line + '</div>';
+  return false;
+};
+try {
+  loadData();
+  updateWeekBadge();
+  logDate=todayStr;
+  const _days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  logDay=PROGRAM.find(d=>d.day===_days[new Date().getDay()])||null;
+  renderPlan();
+} catch(e) {
+  document.body.innerHTML = '<div style="padding:20px;font-family:sans-serif;background:#fff;color:#c00;font-size:14px"><strong>Startup error:</strong> ' + e.message + '<br>' + e.stack + '</div>';
+}
+</script>
+</body>
+</html>
