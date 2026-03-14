@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>KYP Workout Program</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Sans:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;background:#4caf50;color:#111;min-height:100vh}
+#app{max-width:680px;margin:0 auto}
+.hdr{background:#1a2230;padding:14px 15px;border-bottom:1px solid #2a3448}
+.hdr-row{display:flex;align-items:center;gap:10px}
+.hdr-title{font-family:'DM Sans',sans-serif;font-size:21px;font-weight:800;color:#fff;letter-spacing:-.3px}
+.week-badge{margin-left:auto;text-align:right}
+.week-num{font-family:'DM Sans',sans-serif;font-size:20px;font-weight:800;color:#fff}
+.week-lbl{font-size:9px;color:#7a8aaa;text-transform:uppercase;letter-spacing:.5px}
+.wstrip{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;padding:8px 10px;background:#43a047;border-bottom:1px solid #388e3c}
+.sd{text-align:center;padding:6px 2px;border-radius:6px;border:1px solid #dde0e8;background:#b8bdc6}
+.sd.done{background:#7dc898;border-color:#4a9a68}
+.sd.today{background:#90acd8;border-color:#4a7fd4}
+.sd-dow{font-size:9px;font-weight:700;color:#333;text-transform:uppercase;letter-spacing:.3px}
+.sd-date{font-size:11px;font-weight:600;color:#222;line-height:1.2}
+.sd-chk{font-size:10px;color:#1a7048;font-weight:700;min-height:14px}
+.tabs{display:flex;background:#43a047;border-bottom:1px solid #388e3c;overflow-x:auto}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:1;min-width:0;padding:10px 3px;border:none;background:transparent;color:#1a3010;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+.tab.on{color:#1a3a80;border-bottom:2px solid #2a5cb8}
+.body{padding:11px 12px 50px;background:#4caf50}
+.card{background:#c8cdd6;border:1px solid #aab0ba;border-radius:10px;margin-bottom:8px;overflow:hidden}
+.chdr{padding:11px 13px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
+.tag{border-radius:4px;padding:2px 7px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.5px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{color:#445;font-weight:700;text-align:left;padding:3px 5px 6px;font-size:11px;text-transform:uppercase;letter-spacing:.3px}
+td{padding:6px 5px;border-top:1px solid #bbbec6;vertical-align:top}
+.exname{font-weight:700;font-size:12px;color:#111}
+.exwhy{font-size:10px;color:#334;margin-top:3px;line-height:1.4}
+.exhow{font-size:10px;color:#2a3a60;margin-top:2px;line-height:1.4;font-style:italic}
+.inp{width:58px;padding:5px 7px;background:#aab0ba;border:1px solid #888e98;border-radius:5px;color:#111;font-size:12px}
+.inp.gold{background:#d8c878;border-color:#a09020}
+.inp:focus{outline:none;border-color:#2a5cb8}
+.prev{font-size:9px;color:#806010;font-style:italic;margin-top:2px}
+.chkwrap{display:flex;align-items:center;gap:8px;padding:4px 0}
+.chkwrap input[type=checkbox]{width:18px;height:18px;cursor:pointer;accent-color:#1a7048}
+.btnp{width:100%;padding:11px;border-radius:8px;border:none;background:#1a4aaa;color:#fff;font-family:'Inter',sans-serif;font-weight:700;font-size:13px;cursor:pointer;margin-top:10px}
+.btnd{padding:5px 9px;border-radius:6px;border:1px solid #aab0ba;background:#b8bdc6;color:#334;font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif}
+.btnd.on{border-color:var(--c);color:var(--c);background:color-mix(in srgb,var(--c) 15%,#c8cdd6)}
+.cbox{background:#9abcaa;border:1px solid #6a9878;border-radius:8px;padding:10px 12px;margin-top:10px}
+.ctitle{font-size:10px;font-weight:800;color:#0a3820;letter-spacing:.3px;margin-bottom:4px}
+.cbody{font-size:11px;color:#0e3828;line-height:1.5}
+.wbox{background:#aaaecc;border:1px solid #8890b8;border-radius:8px;padding:10px 12px;margin-bottom:10px}
+.wtitle{font-size:10px;font-weight:800;color:#1a2060;letter-spacing:.3px;margin-bottom:6px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:6px}
+.cal-dow{text-align:center;font-size:9px;font-weight:700;color:#445;padding:3px 0;text-transform:uppercase}
+.cal-d{text-align:center;padding:6px 2px;border-radius:5px;cursor:pointer;font-size:12px;font-weight:600;color:#667;border:1px solid transparent}
+.cal-d.done{color:#0a5030;background:#7dc898;border-color:#4a9a68}
+.cal-d.sel{border-color:#2a5cb8;background:#90acd8;color:#0a1a50}
+.cal-d.tod{color:#804000;font-weight:700}
+.cal-d:hover{background:#b0b5be}
+.cal-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.cal-nav button{background:#b8bdc6;border:1px solid #8890a0;border-radius:5px;color:#334;padding:4px 10px;cursor:pointer;font-size:14px}
+.cal-mon{font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;color:#1a2040}
+.sgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:12px}
+.scard{background:#c8cdd6;border:1px solid #aab0ba;border-radius:9px;padding:11px;text-align:center}
+.snum{font-family:'DM Sans',sans-serif;font-size:24px;font-weight:800}
+.slbl{font-size:9px;color:#445;margin-top:2px;text-transform:uppercase;letter-spacing:.4px}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+.pthumb{aspect-ratio:3/4;border-radius:7px;object-fit:cover;width:100%;border:1px solid #aab0ba;cursor:pointer}
+.pdate{font-size:9px;color:#334;text-align:center;margin-top:3px}
+.slbl2{font-family:'DM Sans',sans-serif;font-weight:700;font-size:11px;color:#334;text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px}
+.dbtn{padding:7px 13px;background:#c8a8a8;border:1px solid #a07070;border-radius:6px;color:#802020;font-size:11px;font-weight:700;cursor:pointer}
+.cbtn{padding:7px 13px;background:#c4a0a0;border:1px solid #906060;border-radius:6px;color:#901010;font-size:11px;font-weight:700;cursor:pointer}
+.xbtn{padding:7px 13px;background:#b8bdc6;border:1px solid #9098a8;border-radius:6px;color:#445;font-size:11px;font-weight:700;cursor:pointer}
+.lrow{padding:8px 13px;border-bottom:1px solid #bbbec6;display:flex;align-items:flex-start;gap:10px}
+.lname{font-size:12px;font-weight:700}
+.lnote{font-size:10px;color:#334;margin-top:2px;line-height:1.35}
+.lval{font-family:'DM Sans',sans-serif;font-size:14px;font-weight:800;text-align:right;flex-shrink:0}
+.lref{font-size:9px;color:#556;text-align:right}
+.dbadge{font-size:9px;color:#0a5030;font-weight:800;background:#7dc898;border:1px solid #4a9a68;border-radius:4px;padding:1px 6px}
+.loghdr{font-family:'DM Sans',sans-serif;font-weight:800;font-size:13px;color:#1a2040;padding:8px 13px 4px;border-bottom:1px solid #bbbec6}
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#0f2010;border:1px solid #2a5020;border-radius:9px;padding:9px 20px;font-size:13px;font-weight:700;color:#5dcc80;z-index:2000;white-space:nowrap;display:none}
+#motiv{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.8);z-index:3000;align-items:center;justify-content:center;padding:24px}
+.mbox{background:#1c2333;border-radius:16px;padding:28px 24px;max-width:380px;width:100%;text-align:center}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="hdr">
+    <div class="hdr-row">
+      <span style="font-size:24px">🔥</span>
+      <div class="hdr-title">KYP Workout Program</div>
+      <div class="week-badge">
+        <div class="week-num" id="wknum">0/6</div>
+        <div class="week-lbl">this week</div>
+      </div>
+    </div>
+  </div>
+  <div class="wstrip" id="wstrip"></div>
+  <div class="tabs">
+    <button class="tab on" onclick="go('plan')">📋 Plan</button>
+    <button class="tab" onclick="go('log')">✍️ Log</button>
+    <button class="tab" onclick="go('progress')">📈 Progress</button>
+    <button class="tab" onclick="go('photos')">📸 Photos</button>
+    <button class="tab" onclick="go('labs')">🩸 Labs</button>
+  </div>
+  <div class="body">
+    <div id="t-plan"></div>
+    <div id="t-log" style="display:none"></div>
+    <div id="t-progress" style="display:none"></div>
+    <div id="t-photos" style="display:none"></div>
+    <div id="t-labs" style="display:none"></div>
+  </div>
+</div>
+<div id="toast"></div>
+<div id="motiv">
+  <div class="mbox">
+    <div id="moji" style="font-size:52px;margin-bottom:14px"></div>
+    <div id="mtitle" style="font-family:'DM Sans',sans-serif;font-size:20px;font-weight:800;color:#fff;margin-bottom:10px"></div>
+    <div id="mmsg" style="font-size:13px;color:#8898b0;line-height:1.7;margin-bottom:22px"></div>
+    <button onclick="document.getElementById('motiv').style.display='none'" style="width:100%;padding:12px;border-radius:9px;border:none;background:#2a5cb8;color:#fff;font-weight:700;font-size:14px;cursor:pointer">Lets go!</button>
+  </div>
+</div>
+<script>
+var SK = "kyp-v4";
+var DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+
+var P = [
+  {day:"Monday",tag:"push",color:"#e07020",label:"Push — Chest / Shoulders / Triceps",
+   warmup:[
+     {n:"Band Pull-Aparts",r:"2x15",w:"Activates rear delts and sets scapular position before pressing.",yt:"https://www.youtube.com/results?search_query=band+pull+apart+exercise"},
+     {n:"Shoulder Circles",r:"30 sec",w:"Warms up the shoulder joint. Important after long shifts sitting in apparatus.",yt:"https://www.youtube.com/results?search_query=shoulder+circles+warmup"},
+     {n:"Slow Push-Up",r:"2x8",w:"Primes chest and triceps with bodyweight before loading the bar.",yt:"https://www.youtube.com/results?search_query=slow+push+up+form"}
+   ],
+   ex:[
+     {n:"Barbell Bench Press",s:4,r:"5",rest:"3 min",wt:true,
+      w:"Primary chest mass builder. Heavy compound pressing builds pec thickness.",
+      h:"Retract scapula into bench. Plant feet. Bar to nipple line, slight chest touch, drive hard. Add 5 lbs when all reps are clean."},
+     {n:"Incline Barbell Press",s:3,r:"8",rest:"2 min",wt:true,
+      w:"Upper chest creates the shelf look that shows in a t-shirt collar.",
+      h:"30-45 degree incline. Same scapular setup. Control the descent."},
+     {n:"Seated DB Shoulder Press",s:3,r:"10",rest:"90 sec",wt:true,
+      w:"Overhead strength is critical for pushing ceiling tiles, forcing doors, working overhead in gear.",
+      h:"Sit upright. DBs at ear level. Press straight up. Do not arch lower back."},
+     {n:"Cable / DB Lateral Raises",s:3,r:"12-15",rest:"60 sec",wt:true,
+      w:"Side delts create shoulder width and stabilize the joint during carries.",
+      h:"Slight forward lean, slight elbow bend. Lead with elbow, not hand. Raise to shoulder height only."},
+     {n:"Tricep Rope Pushdown",s:3,r:"12",rest:"60 sec",wt:true,
+      w:"Triceps are 2/3 of arm size. Also improves lockout on all pressing movements.",
+      h:"Elbows pinned at sides. Split rope at bottom. Full extension. Squeeze hard."},
+     {n:"Hollow Body Hold",s:3,r:"30 sec",rest:"45 sec",wt:false,
+      w:"Teaches deep core bracing that transfers to every heavy lift and every carry on the job.",
+      h:"Lie flat, press lower back into floor, arms overhead, legs straight and raised. Hold without arching."}
+   ],
+   cardio:{dur:"20 min",hr:"130-145 bpm",eq:"Bike or Treadmill incline walk",
+     p:"Bike level 8-12, steady pace, never gasping. Treadmill: 3.0 mph, 8-10% incline. Stay in zone 2.",
+     w:"Post-lift cardio forces fat metabolism. 4x/week is the top intervention for raising HDL and lowering triglycerides."}
+  },
+  {day:"Tuesday",tag:"pull",color:"#2060d0",label:"Pull — Back / Biceps / Rear Delts",
+   warmup:[
+     {n:"Cat-Cow",r:"10 reps",w:"Mobilizes thoracic and lumbar spine. Critical before deadlifting.",yt:"https://www.youtube.com/results?search_query=cat+cow+stretch+exercise"},
+     {n:"Hip Hinge with Dowel",r:"10 reps",w:"Grooves the deadlift pattern with no load. Teaches flat back and hip push-back.",yt:"https://www.youtube.com/results?search_query=hip+hinge+dowel+deadlift+warmup"},
+     {n:"Band Rows",r:"2x15",w:"Primes the row pattern and activates mid-back before heavy loading.",yt:"https://www.youtube.com/results?search_query=resistance+band+row+exercise"}
+   ],
+   ex:[
+     {n:"Barbell Deadlift",s:4,r:"5",rest:"3 min",wt:true,
+      w:"Most important lift for firefighters. Dragging victims, pulling hose, lifting equipment all live here.",
+      h:"Bar over mid-foot. Push floor away, do not yank. Flat back, hard brace. Controlled descent. Add 5 lbs when all reps clean."},
+     {n:"Barbell Bent-Over Row",s:4,r:"8",rest:"2 min",wt:true,
+      w:"Builds back thickness and counteracts forward-hunched posture from wearing SCBA.",
+      h:"Hip hinge to 45 degrees. Pull bar to lower chest. Squeeze shoulder blades at top. Control the eccentric."},
+     {n:"Pull-Ups / Lat Pulldown",s:3,r:"8-10",rest:"90 sec",wt:true,
+      w:"V-taper and pulling power. Pull-ups are the gold standard.",
+      h:"Full dead hang start. Drive elbows down and back. Chin over bar. No kipping."},
+     {n:"Face Pulls",s:3,r:"15",rest:"60 sec",wt:true,
+      w:"Rear delts and external rotators prevent shoulder impingement. Do not skip these.",
+      h:"Cable at face height. Pull rope to forehead, elbows high and flared. Light weight, perfect form."},
+     {n:"Barbell / DB Curl",s:3,r:"12",rest:"60 sec",wt:true,
+      w:"Arm size and grip strength. Grip is a limiter on victim drags, hose pulls, and ladder work.",
+      h:"Elbows stay at sides. Full extension at bottom, full curl at top. No swinging."},
+     {n:"Plank Shoulder Tap",s:3,r:"10/side",rest:"45 sec",wt:false,
+      w:"Anti-rotation core stability. Same demand as carrying a charged hose line or dragging a victim.",
+      h:"High plank position. Tap opposite shoulder without letting hips rotate. Slow and controlled."}
+   ],
+   cardio:{dur:"20 min",hr:"130-145 bpm",eq:"Rowing Machine (strongly preferred)",
+     p:"Rate 22-24 spm. Maintain consistent pace. If HR goes over 150, back off. Full body output.",
+     w:"Rowing engages legs, back, and arms simultaneously. Excellent for triglyceride reduction."}
+  },
+  {day:"Wednesday",tag:"conditioning",color:"#cc2020",label:"Conditioning — Firefighter Performance",
+   warmup:[
+     {n:"5 min Easy Row or Bike",r:"5 min",w:"Elevates heart rate gradually before high-intensity conditioning work.",yt:"https://www.youtube.com/results?search_query=rowing+machine+warmup+form"},
+     {n:"Worlds Greatest Stretch",r:"5/side",w:"Opens hips, thoracic spine, and hip flexors — everything tight in bunker gear.",yt:"https://www.youtube.com/results?search_query=worlds+greatest+stretch"},
+     {n:"Leg Swings",r:"10 each direction",w:"Dynamic hip mobility before loaded carry and step-up work.",yt:"https://www.youtube.com/results?search_query=leg+swings+hip+mobility+warmup"}
+   ],
+   ex:[
+
+     {n:"Treadmill Incline Walk/Run",s:5,r:"2 min",rest:"90 sec",wt:false,
+      w:"Simulates the cardiovascular demand of stair climbing and hose advancement in full gear. Builds job-specific aerobic capacity.",
+      h:"Set incline to 10-15%. Walk at 3.0-3.5 mph or run at 5-6 mph. Drive with arms, stay upright. Each interval should feel hard but controlled."},
+     {n:"Farmer Carries",s:4,r:"50 ft",rest:"90 sec",wt:true,
+      w:"Grip, core, shoulder stability under load. This is literally what you do on the job.",
+      h:"Heaviest DBs you can carry with tall posture. Shoulders back, no lateral lean. Slow deliberate steps."},
+     {n:"Box Step-Ups with Weight",s:3,r:"10/leg",rest:"60 sec",wt:true,
+      w:"Stair climbing simulation under load. Every floor you climb in gear is a set of weighted step-ups.",
+      h:"Use 20-24 inch box. Hold DBs or wear vest. Drive through heel of lead foot. Full extension at top."},
+     {n:"Battle Ropes / KB Swings",s:4,r:"30 sec",rest:"60 sec",wt:false,
+      w:"Trains explosive aerobic power — the sprint from apparatus to structure or burst of max exertion.",
+      h:"Battle ropes: alternate waves, load hips not just arms. KB swings: hip hinge drive, power from hips."},
+     {n:"Rowing Machine",s:1,r:"15 min steady",rest:"N/A",wt:false,
+      w:"Aerobic base work after the high-intensity work above.",
+      h:"HR 130-150 bpm. Rate 20-22 spm. Cooldown — not max effort. Focus on leg drive and clean finish."},
+     {n:"Dead Bugs",s:3,r:"10/side",rest:"45 sec",wt:false,
+      w:"Deep core activation targeting transverse abdominis — creates the flat look and protects lower back.",
+      h:"Lie on back, arms up, knees 90 degrees. Extend opposite arm and leg toward floor without letting lower back lift."}
+   ],
+   cardio:null
+  },
+  {day:"Thursday",tag:"lower",color:"#1a9040",label:"Lower Body — Legs / Glutes / Core",
+   warmup:[
+     {n:"Leg Swing + Hip Circle",r:"10 each direction",w:"Opens the hip capsule before loaded squat and hinge work.",yt:"https://www.youtube.com/results?search_query=leg+swings+hip+circles+warmup"},
+     {n:"Goblet Squat (light)",r:"2x10",w:"Grooves squat pattern, opens hip flexors, warms up knees and ankles.",yt:"https://www.youtube.com/results?search_query=goblet+squat+tutorial"},
+     {n:"Glute Bridge",r:"2x15",w:"Activates glutes before squatting so they fire during the lift instead of defaulting to quads.",yt:"https://www.youtube.com/results?search_query=glute+bridge+exercise+form"}
+   ],
+   ex:[
+     {n:"Barbell Back Squat",s:4,r:"5",rest:"3 min",wt:true,
+      w:"Builds total lower body strength for stair climbing, victim carries, and explosive emergency response.",
+      h:"Bar on traps, chest up, feet shoulder-width. Sit to full depth. Drive knees out. Add 5 lbs when all reps clean."},
+     {n:"Romanian Deadlift",s:3,r:"10",rest:"2 min",wt:true,
+      w:"Hamstrings are undertrained by most lifters and critical for hip hinge strength and pulling power.",
+      h:"Soft knee bend. Push hips back, bar close to body. Feel deep hamstring stretch. Do NOT round lower back."},
+     {n:"Barbell Hip Thrust",s:3,r:"12",rest:"90 sec",wt:true,
+      w:"Peak glute activation. Glutes drive every explosive movement: jumping onto apparatus, sprinting, stair climbing.",
+      h:"Upper back on bench, bar across hip crease (pad it). Drive hips up until shin is vertical. Squeeze hard at top."},
+     {n:"Walking Lunges",s:3,r:"12/leg",rest:"90 sec",wt:true,
+      w:"Unilateral leg strength and balance. Critical for navigating obstacles in low-visibility conditions.",
+      h:"Long stride, front shin vertical. Rear knee just off floor. Stay tall. Hold DBs for added challenge."},
+     {n:"Hanging Leg Raises",s:4,r:"10-12",rest:"60 sec",wt:false,
+      w:"Direct lower ab development. Also builds grip strength and shoulder stability.",
+      h:"Dead hang from pull-up bar. Raise legs to 90 degrees. SLOW descent is where the work happens. No swinging."},
+     {n:"Ab Wheel Rollout",s:3,r:"8-10",rest:"60 sec",wt:false,
+      w:"Full-length core strength from stretched to contracted. Hollow holds and crunches cannot replicate this.",
+      h:"Kneel on pad. Roll out until hips want to drop then stop. Pull back with abs, not arms."}
+   ],
+   cardio:{dur:"20 min",hr:"130-145 bpm",eq:"Stationary Bike (preferred after leg day)",
+     p:"Bike is easier on fatigued quads than walking. Level 6-10, comfortable seated pace. This is not optional.",
+     w:"Post-leg cardio keeps metabolic rate elevated after the most taxing session of the week."}
+  },
+  {day:"Friday",tag:"upper",color:"#8820d0",label:"Upper Body — Strength + Volume",
+   warmup:[
+     {n:"Band Pull-Aparts",r:"2x15",w:"Rear delt and scapular activation before overhead press.",yt:"https://www.youtube.com/results?search_query=band+pull+apart+exercise"},
+     {n:"Overhead Stretch + T-Spine Rotation",r:"10 each",w:"Opens thoracic spine for overhead press. Tight t-spine forces lumbar compensation and causes low back pain.",yt:"https://www.youtube.com/results?search_query=thoracic+spine+rotation+stretch"},
+     {n:"Scapular Push-Ups",r:"15 reps",w:"Warms up serratus anterior — keeps the shoulder blade flat during overhead press.",yt:"https://www.youtube.com/results?search_query=scapular+push+up+how+to"}
+   ],
+   ex:[
+     {n:"Overhead Press (OHP)",s:4,r:"5",rest:"3 min",wt:true,
+      w:"Overhead strength is critical for firefighter tasks — forcing doors, pushing ceiling tiles, working overhead.",
+      h:"Bar from rack at shoulder height. Brace hard, squeeze glutes. Press bar up over ears. No lumbar arch. Add 5 lbs when clean."},
+     {n:"Weighted Pull-Ups",s:4,r:"6",rest:"2 min",wt:true,
+      w:"Adding weight to pull-ups directly transfers to ladder climbs and victim drags.",
+      h:"Use dip belt or hold DB with feet. Dead hang start. Drive elbows to hips. Add weight when 6 feel controlled."},
+     {n:"DB Incline Flye",s:3,r:"12",rest:"60 sec",wt:true,
+      w:"Targets the stretch-loaded pec — the part bench press misses. Creates chest fullness and width.",
+      h:"30 degree incline. Arms slightly bent, wide arc to chest level — feel the stretch. Drive with chest, not shoulders."},
+     {n:"Cable Row",s:3,r:"12",rest:"60 sec",wt:true,
+      w:"Mid-back and rhomboid work. Posture training to counteract forward rounding from carrying packs.",
+      h:"Seated cable row, neutral grip. Drive elbows back past torso. Squeeze mid-back at peak. Control return."},
+     {n:"Tricep Overhead Extension",s:3,r:"12",rest:"60 sec",wt:true,
+      w:"Long head of the tricep — the biggest portion. Only way to fully stretch and develop the long head.",
+      h:"EZ bar or DB overhead. Elbows forward, upper arms stay still. Lower behind head, feel stretch, press up."},
+     {n:"Reverse Crunches",s:4,r:"15",rest:"45 sec",wt:false,
+      w:"Lower ab emphasis. Most people only train abs top-down. This fills the gap.",
+      h:"Lie flat, hands under lower back. Curl pelvis up bringing knees to chest. 3 second slow descent — that is the work."}
+   ],
+   cardio:{dur:"20 min",hr:"130-145 bpm",eq:"Rowing Machine or Bike",
+     p:"4th cardio session of the week. Medically non-negotiable given LDL 197 and TG 199. Row at rate 22 spm or bike at comfortable level.",
+     w:"Frequency is the key variable for lipid panel improvement. 4x/week outperforms 2x/week significantly."}
+  },
+  {day:"Saturday",tag:"recovery",color:"#0898a0",label:"Active Recovery + Mobility",
+   warmup:null,
+   ex:[
+     {n:"30 min Walk or Easy Bike",s:1,r:"30 min",rest:"N/A",wt:false,
+      w:"Low-intensity movement accelerates recovery by increasing blood flow to sore muscles without adding fatigue.",
+      h:"HR under 120 bpm. Conversational pace. Outside preferred. This still counts toward HDL improvement over time."},
+     {n:"Hip Flexor Stretch",s:2,r:"60 sec/side",rest:"N/A",wt:false,
+      w:"Firefighters sit for hours between calls. Tight hip flexors cause anterior pelvic tilt and low back pain.",
+      h:"Kneeling lunge. Back knee on floor. Push hips forward. Tuck pelvis slightly. Breathe into the stretch."},
+     {n:"Thoracic Spine Rotation",s:2,r:"10/side",rest:"N/A",wt:false,
+      w:"SCBA and heavy gear compress the thoracic spine. This undoes it.",
+      h:"Sit cross-legged or in lunge. Hand behind head. Rotate elbow toward ceiling. Hold 2 seconds."},
+     {n:"Foam Roll",s:1,r:"8 min",rest:"N/A",wt:false,
+      w:"Self-myofascial release reduces soreness and improves tissue quality over time.",
+      h:"30-45 sec per area: quads, IT band, glutes, upper back. Pause on tender spots. Breathe through it."}
+   ],
+   cardio:null
+  },
+  {day:"Sunday",tag:"rest",color:"#556",label:"Full Rest",warmup:null,ex:[],cardio:null}
+];
+
+var LABS = [
+  {n:"Total Cholesterol",v:281,ref:"<200",u:"mg/dL",s:"high",note:"Significantly elevated. Diet and consistent aerobic exercise are first-line interventions."},
+  {n:"LDL Cholesterol",v:197,ref:"<100",u:"mg/dL",s:"high",note:"190+ may indicate familial hypercholesterolemia. Discuss with your doctor. Statin therapy may be warranted."},
+  {n:"HDL Cholesterol",v:46,ref:">=40",u:"mg/dL",s:"borderline",note:"Just above minimum. Aerobic exercise 4x/week is the number one way to raise HDL. Target 55+ in 12 weeks."},
+  {n:"Triglycerides",v:199,ref:"<150",u:"mg/dL",s:"high",note:"Elevated. Cut refined carbs, sugar, and alcohol. Cardio frequency is the most powerful intervention."},
+  {n:"Testosterone",v:530,ref:"300-1000",u:"ng/dL",s:"normal",note:"Solid mid-range. Supports strength adaptation and recovery. Mention lipid panel to your T prescriber."},
+  {n:"Hematocrit",v:51.9,ref:"39.4-51.1",u:"%",s:"borderline",note:"Slightly high — common on TRT. Stay heavily hydrated especially on 24-hr shifts. 3-4L per day."},
+  {n:"Hemoglobin A1c",v:5.6,ref:"<5.7",u:"%",s:"normal",note:"Excellent — no diabetes risk."},
+  {n:"Glucose",v:94,ref:"65-139",u:"mg/dL",s:"normal",note:"Perfect."},
+  {n:"TSH",v:1.05,ref:"0.40-4.50",u:"mIU/L",s:"normal",note:"Thyroid function completely normal."}
+];
+
+var MOTIVS = [
+  {e:"🔥",t:"Full week. No excuses.",m:"6 days done. That is not a workout streak, that is a lifestyle. Your cardiovascular system is adapting, your lifts are getting stronger, and the compound effect is building. Rest tomorrow. Come back harder."},
+  {e:"💪",t:"Week complete.",m:"Every session this week was a deposit into your long-term health. LDL drops, HDL rises, strength builds. You are doing the work most people only talk about."},
+  {e:"🏆",t:"6 for 6.",m:"Perfect week. The version of you that shows up 6 days a week is the version that wins. Keep that standard. Next week, same thing."},
+  {e:"⚡",t:"Full send.",m:"This is what consistency looks like. Not motivation — discipline. You showed up when shifts were long and rest sounded better. That is the difference."},
+  {e:"🎯",t:"Week locked in.",m:"Another week in the books. Your body is changing even when you cannot see it yet. The results are coming. Stay the course."},
+  {e:"🚒",t:"Built different.",m:"You are training like your life depends on it — because on the job it might. 6 days this week. Your crew is lucky to have someone who takes fitness this seriously."}
+];
+
+var db = {sessions:{}, photos:[]};
+var openDay = null;
+var logDay = null;
+var logDate = null;
+var calY, calM, motivShown = false;
+
+function ld(d){ return d.getFullYear()+"-"+zp(d.getMonth()+1)+"-"+zp(d.getDate()); }
+function zp(n){ return String(n).padStart(2,"0"); }
+var today = ld(new Date());
+calY = new Date().getFullYear();
+calM = new Date().getMonth();
+
+function load(){
+  try{
+    var r = localStorage.getItem(SK);
+    if(r) db = JSON.parse(r);
+    if(!db.sessions) db.sessions = {};
+    if(!db.photos) db.photos = [];
+  }catch(e){}
+}
+function save(){ try{ localStorage.setItem(SK, JSON.stringify(db)); }catch(e){} }
+
+function toast(m){
+  var t = document.getElementById("toast");
+  t.textContent = m; t.style.display = "block";
+  clearTimeout(t._t);
+  t._t = setTimeout(function(){ t.style.display = "none"; }, 2500);
+}
+
+function key(day, date){ return (date||today)+"-"+day; }
+
+function wkCount(){
+  var d = new Date(); var dow = d.getDay();
+  var ws = new Date(d); ws.setDate(d.getDate()-(dow===0?6:dow-1));
+  var wsStr = ld(ws);
+  var n = 0;
+  P.filter(function(p){ return p.tag !== "rest"; }).forEach(function(p){
+    var found = Object.keys(db.sessions).some(function(k){
+      return k.endsWith("-"+p.day) && k.slice(0,10) >= wsStr && db.sessions[k].saved;
+    });
+    if(found) n++;
+  });
+  return n;
+}
+
+function updateBadge(){
+  var n = wkCount();
+  var el = document.getElementById("wknum");
+  if(el){ el.textContent = n+"/6"; el.style.color = n>=6?"#4caa38":"#fff"; }
+  drawStrip();
+  checkMotiv(n);
+}
+
+function drawStrip(){
+  var el = document.getElementById("wstrip");
+  if(!el) return;
+  var d = new Date(); var dow = d.getDay();
+  var ws = new Date(d); ws.setDate(d.getDate()-(dow===0?6:dow-1));
+  var labels = ["Mon","Tue","Wed","Thu","Fri","Sat"];
+  var h = "";
+  for(var i=0;i<6;i++){
+    var dt = new Date(ws); dt.setDate(ws.getDate()+i);
+    var ds = ld(dt);
+    var prog = P[i];
+    var done = Object.keys(db.sessions).some(function(k){ return k===key(prog.day,ds) && db.sessions[k].saved; });
+    var isT = ds===today;
+    h += "<div class=\"sd"+(done?" done":"")+(isT?" today":"")+"\">";
+    h += "<div class=\"sd-dow\">"+labels[i]+"</div>";
+    h += "<div class=\"sd-date\">"+(dt.getMonth()+1)+"/"+dt.getDate()+"</div>";
+    h += "<div class=\"sd-chk\">"+(done?"✓":"")+"</div>";
+    h += "</div>";
+  }
+  el.innerHTML = h;
+}
+
+function checkMotiv(n){
+  if(n < 6 || motivShown) return;
+  var d = new Date(); var dow = d.getDay();
+  var ws = new Date(d); ws.setDate(d.getDate()-(dow===0?6:dow-1));
+  var wsStr = ld(ws);
+  if(localStorage.getItem("kyp-mw") === wsStr) return;
+  localStorage.setItem("kyp-mw", wsStr);
+  motivShown = true;
+  var m = MOTIVS[Math.floor(Math.random()*MOTIVS.length)];
+  document.getElementById("moji").textContent = m.e;
+  document.getElementById("mtitle").textContent = m.t;
+  document.getElementById("mmsg").textContent = m.m;
+  document.getElementById("motiv").style.display = "flex";
+}
+
+function go(name){
+  ["plan","log","progress","photos","labs"].forEach(function(t){
+    document.getElementById("t-"+t).style.display = t===name?"block":"none";
+  });
+  document.querySelectorAll(".tab").forEach(function(b,i){
+    b.classList.toggle("on", ["plan","log","progress","photos","labs"][i]===name);
+  });
+  if(name==="plan") drawPlan();
+  if(name==="log") drawLog();
+  if(name==="progress") drawProgress();
+  if(name==="photos") drawPhotos();
+  if(name==="labs") drawLabs();
+}
+
+// ── PLAN ──
+function drawPlan(){
+  var el = document.getElementById("t-plan");
+  var todayName = DAYS[new Date().getDay()];
+  var h = "";
+  P.forEach(function(d){
+    var isOpen = openDay===d.day;
+    var isT = d.day===todayName;
+    h += "<div class=\"card\" style=\"border-color:"+(isOpen?d.color+"88":"#aab0ba")+"\">";
+    h += "<div class=\"chdr\" onclick=\"toggleDay('"+d.day+"')\">";
+    h += "<div style=\"display:flex;align-items:center;gap:9px\">";
+    h += "<span class=\"tag\" style=\"background:"+d.color+"22;border:1px solid "+d.color+"66;color:"+d.color+"\">"+d.tag+"</span>";
+    h += "<div><div style=\"font-weight:700;font-size:13px\">"+d.day+(isT?" <span class=\"dbadge\">TODAY</span>":"")+"</div>";
+    h += "<div style=\"font-size:10px;color:#334;margin-top:1px\">"+d.label+"</div></div></div>";
+    h += "<span style=\"color:"+d.color+";font-size:13px\">"+(isOpen?"▲":"▼")+"</span></div>";
+    if(isOpen){
+      h += "<div style=\"border-top:1px solid #bbbec6;padding:13px\">";
+      if(d.ex.length===0){
+        h += "<p style=\"color:#445;font-size:12px\">Full rest. Sleep, eat well, hydrate. Growth happens during recovery.</p>";
+      } else {
+        if(d.warmup){
+          h += "<div class=\"wbox\"><div class=\"wtitle\">🔥 WARMUP</div>";
+          d.warmup.forEach(function(w){
+            h += "<div style=\"margin-bottom:9px;padding-bottom:9px;border-bottom:1px solid #9a9eb8\">";
+            h += "<div style=\"display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:3px\">";
+            h += "<div style=\"font-size:11px;font-weight:700;color:#1a2060\">"+w.n+" <span style=\"color:#3a4880;font-weight:400\">— "+w.r+"</span></div>";
+            if(w.yt) h += "<a href=\""+w.yt+"\" target=\"_blank\" style=\"flex-shrink:0;padding:3px 8px;background:#cc0000;border-radius:5px;color:#fff;font-size:9px;font-weight:700;text-decoration:none\">▶ Watch</a>";
+            h += "</div>";
+            h += "<div class=\"exwhy\">"+w.w+"</div>";
+            h += "</div>";
+          });
+          h += "</div>";
+        }
+        h += "<table><thead><tr><th>Exercise</th><th style=\"width:36px\">Sets</th><th style=\"width:44px\">Reps</th><th style=\"width:44px\">Rest</th></tr></thead><tbody>";
+        d.ex.forEach(function(ex){
+          h += "<tr><td><div class=\"exname\">"+ex.n+"</div><div class=\"exwhy\">"+ex.w+"</div><div class=\"exhow\">↳ "+ex.h+"</div></td>";
+          h += "<td style=\"text-align:center;color:#334;font-weight:600\">"+ex.s+"</td>";
+          h += "<td style=\"text-align:center;color:#334\">"+ex.r+"</td>";
+          h += "<td style=\"text-align:center;color:#445;font-size:10px\">"+ex.rest+"</td></tr>";
+        });
+        h += "</tbody></table>";
+        if(d.cardio){
+          h += "<div class=\"cbox\"><div class=\"ctitle\">🫀 POST-LIFT CARDIO — "+d.cardio.dur+" @ "+d.cardio.hr+"</div>";
+          h += "<div style=\"font-size:11px;color:#0e3828;font-weight:600;margin-bottom:3px\">"+d.cardio.eq+"</div>";
+          h += "<div class=\"cbody\">"+d.cardio.p+"</div>";
+          h += "<div style=\"font-size:10px;color:#0e3828;margin-top:4px;font-style:italic\">"+d.cardio.w+"</div></div>";
+        }
+        h += "<button onclick=\"goLog('"+d.day+"')\" style=\"margin-top:11px;padding:8px 15px;background:"+d.color+"22;border:1px solid "+d.color+"66;border-radius:7px;color:"+d.color+";font-weight:700;font-size:11px;cursor:pointer\">Log This Workout →</button>";
+      }
+      h += "</div>";
+    }
+    h += "</div>";
+  });
+  el.innerHTML = h;
+}
+
+function toggleDay(day){ openDay = openDay===day?null:day; drawPlan(); }
+function goLog(day){ logDay = P.find(function(d){ return d.day===day; }); logDate = today; go("log"); }
+
+// ── LOG ──
+function drawLog(){
+  var el = document.getElementById("t-log");
+  var todayName = DAYS[new Date().getDay()];
+  var h = buildCal();
+  h += "<div style=\"display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px\">";
+  P.forEach(function(d){
+    var on = logDay && logDay.day===d.day;
+    h += "<button class=\"btnd"+(on?" on":"")+"\" style=\"--c:"+d.color+"\" onclick=\"selDay('"+d.day+"')\">"+(d.day===todayName?"🔥":"")+d.day.slice(0,3)+"</button>";
+  });
+  h += "</div>";
+  if(!logDay){
+    h += "<div class=\"card\" style=\"padding:18px;text-align:center;color:#445;font-size:12px\">Select a day above or tap a date on the calendar.</div>";
+    el.innerHTML = h; return;
+  }
+  if(logDay.ex.length===0){
+    h += "<div class=\"card\" style=\"padding:20px;text-align:center\"><div style=\"font-size:28px;margin-bottom:8px\">😴</div>";
+    h += "<div style=\"font-weight:700;margin-bottom:4px;font-size:16px\">Rest Day</div>";
+    h += "<div style=\"font-size:12px;color:#445\">Sleep, eat, hydrate. Adaptation happens here.</div></div>";
+    el.innerHTML = h; return;
+  }
+  var k = key(logDay.day, logDate||today);
+  var ex = db.sessions[k]||{};
+  var logged = !!ex.saved;
+  var dlabel = (logDate===today)?"Today":(logDate||today);
+  h += "<div class=\"card\" style=\"margin-bottom:10px\">";
+  h += "<div class=\"loghdr\" style=\"color:"+logDay.color+"\">";
+  h += logDay.day+" — "+logDay.label;
+  h += "<span style=\"float:right;font-size:10px;color:#445;font-weight:400\">"+dlabel+"</span>";
+  if(logged) h += "<span class=\"dbadge\" style=\"float:right;margin-right:8px\">✓ Logged</span>";
+  h += "</div><div style=\"padding:12px\">";
+  logDay.ex.forEach(function(e,i){
+    var prev = getPrev(e.n, logDay.day, logDate||today);
+    var swt = (ex.wts&&ex.wts[i]!=null)?ex.wts[i]:"";
+    var srp = (ex.rps&&ex.rps[i]!=null)?ex.rps[i]:"";
+    var sck = ex.checks&&ex.checks[i];
+    h += "<div style=\"margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #bbbec6\">";
+    h += "<div style=\"font-size:12px;font-weight:700;color:#111;margin-bottom:4px\">"+e.n+"</div>";
+    h += "<div class=\"exwhy\" style=\"margin-bottom:5px\">"+e.w+"</div>";
+    if(e.wt){
+      h += "<div style=\"display:flex;align-items:center;gap:8px;flex-wrap:wrap\">";
+      h += "<input type=\"number\" id=\"wt"+i+"\" class=\"inp"+(prev?" gold":"")+"\" placeholder=\""+(prev?"prev: "+prev:"lbs")+"\" value=\""+swt+"\" style=\"width:60px\">";
+      h += "<span style=\"font-size:10px;color:#445\">lbs</span>";
+      h += "<input type=\"text\" id=\"rp"+i+"\" class=\"inp\" placeholder=\""+e.r+"\" value=\""+srp+"\" style=\"width:60px\">";
+      h += "<span style=\"font-size:10px;color:#445\">reps</span></div>";
+      if(prev) h += "<div class=\"prev\">Last logged: "+prev+" lbs</div>";
+    } else {
+      h += "<div class=\"chkwrap\"><input type=\"checkbox\" id=\"ck"+i+"\" "+(sck?"checked":"")+">";
+      h += "<label for=\"ck"+i+"\" style=\"font-size:11px;color:#334;cursor:pointer\">Completed — "+e.s+" sets x "+e.r+"</label></div>";
+    }
+    h += "</div>";
+  });
+  if(logDay.cardio){
+    var cck = ex.checks&&ex.checks["c"];
+    h += "<div class=\"cbox\" style=\"margin-top:0;margin-bottom:8px\">";
+    h += "<div class=\"ctitle\">🫀 POST-LIFT CARDIO — "+logDay.cardio.dur+" @ "+logDay.cardio.hr+"</div>";
+    h += "<div style=\"font-size:11px;color:#0e3828;font-weight:600;margin-bottom:3px\">"+logDay.cardio.eq+"</div>";
+    h += "<div class=\"cbody\" style=\"margin-bottom:7px\">"+logDay.cardio.p+"</div>";
+    h += "<div class=\"chkwrap\"><input type=\"checkbox\" id=\"ckc\" "+(cck?"checked":"")+">";
+    h += "<label for=\"ckc\" style=\"font-size:11px;color:#0e3828;cursor:pointer\">Cardio completed ✓</label></div></div>";
+  }
+  h += "<button class=\"btnp\" onclick=\"saveWkt()\">✅ Save Workout</button>";
+  h += "</div></div>";
+  el.innerHTML = h;
+}
+
+function selDay(day){
+  logDay = P.find(function(d){ return d.day===day; });
+  if(!logDate) logDate = today;
+  drawLog();
+}
+
+function getPrev(exName, dayName, curDate){
+  var keys = Object.keys(db.sessions).filter(function(k){
+    return k.endsWith("-"+dayName) && k.slice(0,10)<curDate && db.sessions[k].saved;
+  }).sort(function(a,b){ return b.localeCompare(a); });
+  if(!keys.length) return null;
+  var sess = db.sessions[keys[0]];
+  if(!sess||!sess.wts) return null;
+  var prog = P.find(function(d){ return d.day===dayName; });
+  if(!prog) return null;
+  var idx = prog.ex.findIndex(function(e){ return e.n===exName; });
+  return (sess.wts[idx]!=null&&sess.wts[idx]!=="")?sess.wts[idx]:null;
+}
+
+function saveWkt(){
+  if(!logDay||logDay.ex.length===0) return;
+  var k = key(logDay.day, logDate||today);
+  var wts = {}; var rps = {}; var checks = {};
+  logDay.ex.forEach(function(e,i){
+    if(e.wt){
+      var we = document.getElementById("wt"+i);
+      var re = document.getElementById("rp"+i);
+      if(we&&we.value) wts[i] = we.value;
+      if(re&&re.value) rps[i] = re.value;
+    } else {
+      var ce = document.getElementById("ck"+i);
+      if(ce) checks[i] = ce.checked;
+    }
+  });
+  if(logDay.cardio){
+    var cc = document.getElementById("ckc");
+    if(cc) checks["c"] = cc.checked;
+  }
+  db.sessions[k] = {wts:wts, rps:rps, checks:checks, date:logDate||today, dayName:logDay.day, saved:true};
+  save();
+  updateBadge();
+  toast("✅ Workout saved!");
+  drawLog();
+}
+
+// ── CALENDAR ──
+function buildCal(){
+  var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  var fd = new Date(calY,calM,1).getDay();
+  var dim = new Date(calY,calM+1,0).getDate();
+  var h = "<div class=\"card\" style=\"padding:12px;margin-bottom:10px\">";
+  h += "<div class=\"cal-nav\">";
+  h += "<button onclick=\"calPrev()\">‹</button>";
+  h += "<span class=\"cal-mon\">"+months[calM]+" "+calY+"</span>";
+  h += "<button onclick=\"calNext()\">›</button></div>";
+  h += "<div class=\"cal-grid\">";
+  ["Su","Mo","Tu","We","Th","Fr","Sa"].forEach(function(d){ h += "<div class=\"cal-dow\">"+d+"</div>"; });
+  for(var i=0;i<fd;i++) h += "<div></div>";
+  for(var d=1;d<=dim;d++){
+    var ds = calY+"-"+zp(calM+1)+"-"+zp(d);
+    var done = Object.keys(db.sessions).some(function(k){ return k.startsWith(ds)&&db.sessions[k].saved; });
+    var isT = ds===today;
+    var isSel = ds===(logDate||today)&&logDay;
+    h += "<div class=\"cal-d"+(done?" done":"")+(isT?" tod":"")+(isSel?" sel":"")+"\" onclick=\"calSel('"+ds+"')\">"+d+"</div>";
+  }
+  h += "</div></div>";
+  return h;
+}
+
+function calPrev(){ calM--; if(calM<0){calM=11;calY--;} drawLog(); }
+function calNext(){ calM++; if(calM>11){calM=0;calY++;} drawLog(); }
+function calSel(ds){
+  logDate = ds;
+  var dt = new Date(ds+"T12:00:00");
+  logDay = P.find(function(d){ return d.day===DAYS[dt.getDay()]; })||null;
+  drawLog();
+}
+
+// ── PROGRESS ──
+function drawProgress(){
+  var el = document.getElementById("t-progress");
+  var total = Object.values(db.sessions).filter(function(s){ return s.saved; }).length;
+  var wk = wkCount();
+  var prs = {};
+  P.forEach(function(d){
+    d.ex.filter(function(e){ return e.wt; }).forEach(function(ex){
+      var best = 0;
+      Object.keys(db.sessions).filter(function(k){ return k.endsWith("-"+d.day)&&db.sessions[k].saved&&db.sessions[k].wts; }).forEach(function(k){
+        var s = db.sessions[k];
+        var idx = d.ex.indexOf(ex);
+        var w = parseFloat(s.wts[idx]);
+        if(!isNaN(w)&&w>best) best = w;
+      });
+      if(best>0) prs[ex.n] = best;
+    });
+  });
+  var todayName = DAYS[new Date().getDay()];
+  var nd = new Date(); var dow = nd.getDay();
+  var ws = new Date(nd); ws.setDate(nd.getDate()-(dow===0?6:dow-1));
+  var wsStr = ld(ws);
+  var h = "<div class=\"sgrid\">";
+  h += "<div class=\"scard\"><div class=\"snum\" style=\"color:#2a5cb8\">"+total+"</div><div class=\"slbl\">Total Sessions</div></div>";
+  h += "<div class=\"scard\"><div class=\"snum\" style=\"color:"+(wk>=6?"#1a8040":"#c08010")+"\">"+wk+"/6</div><div class=\"slbl\">This Week</div></div>";
+  h += "<div class=\"scard\"><div class=\"snum\" style=\"color:#8820d0\">"+Object.keys(prs).length+"</div><div class=\"slbl\">Lifts Tracked</div></div>";
+  h += "</div>";
+  h += "<div class=\"card\" style=\"padding:13px;margin-bottom:8px\"><div class=\"slbl2\">This Week</div>";
+  P.filter(function(p){ return p.tag!=="rest"; }).forEach(function(d){
+    var done = Object.keys(db.sessions).some(function(k){ return k.endsWith("-"+d.day)&&k.slice(0,10)>=wsStr&&db.sessions[k].saved; });
+    h += "<div style=\"display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid #bbbec6\">";
+    h += "<div style=\"display:flex;align-items:center;gap:8px\"><span style=\"width:6px;height:6px;border-radius:50%;background:"+(done?"#1a8040":"#8090a0")+";display:inline-block\"></span>";
+    h += "<span style=\"font-size:12px;font-weight:"+(d.day===todayName?700:400)+";color:"+(d.day===todayName?"#111":"#334")+"\">"+d.day+(d.day===todayName?" 🔥":"")+"</span></div>";
+    h += "<div style=\"display:flex;gap:7px;align-items:center\"><span class=\"tag\" style=\"background:"+d.color+"22;border:1px solid "+d.color+"66;color:"+d.color+"\">"+d.tag+"</span>";
+    h += (done?"<span style=\"color:#1a8040;font-size:11px\">✓</span>":(d.cardio?"<span style=\"font-size:9px;color:#883010\">+cardio</span>":""));
+    h += "</div></div>";
+  });
+  h += "</div>";
+  if(Object.keys(prs).length>0){
+    h += "<div class=\"card\" style=\"padding:13px;margin-bottom:8px\"><div class=\"slbl2\">Personal Records</div>";
+    Object.entries(prs).forEach(function(e){
+      h += "<div style=\"display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #bbbec6;font-size:12px\">";
+      h += "<span style=\"color:#1a2450\">"+e[0]+"</span><span style=\"color:#a07000;font-weight:700\">"+e[1]+" lbs</span></div>";
+    });
+    h += "</div>";
+  }
+  var rk = Object.keys(db.sessions).filter(function(k){ return db.sessions[k].saved; }).sort(function(a,b){ return b.localeCompare(a); }).slice(0,10);
+  if(rk.length>0){
+    h += "<div class=\"card\" style=\"padding:13px;margin-bottom:8px\"><div class=\"slbl2\">Recent Sessions</div>";
+    rk.forEach(function(k){
+      var s = db.sessions[k];
+      h += "<div style=\"display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #bbbec6;font-size:11px\">";
+      h += "<span style=\"color:#1a2450;font-weight:600\">"+s.dayName+"</span><span style=\"color:#445\">"+s.date+"</span></div>";
+    });
+    h += "</div>";
+  }
+  if(total===0) h += "<div class=\"card\" style=\"padding:18px;text-align:center;color:#445;font-size:12px\">No sessions yet. Hit Log to get started.</div>";
+  h += "<div class=\"card\" style=\"padding:13px\"><div class=\"slbl2\">Data</div>";
+  h += "<div style=\"font-size:11px;color:#445;margin-bottom:10px\">"+total+" sessions saved locally in your browser.</div>";
+  h += "<div id=\"clrarea\"><button class=\"dbtn\" onclick=\"askClear()\">🗑️ Clear All Data</button></div></div>";
+  el.innerHTML = h;
+}
+
+function askClear(){
+  document.getElementById("clrarea").innerHTML =
+    "<div style=\"font-size:11px;color:#aa2020;margin-bottom:8px\">Delete all sessions and photos? Cannot be undone.</div>" +
+    "<div style=\"display:flex;gap:8px\">" +
+    "<button class=\"cbtn\" onclick=\"clearAll()\">Yes, clear everything</button>" +
+    "<button class=\"xbtn\" onclick=\"drawProgress()\">Cancel</button></div>";
+}
+
+function clearAll(){
+  db = {sessions:{}, photos:[]};
+  save(); updateBadge();
+  toast("🗑️ All data cleared.");
+  drawProgress();
+}
+
+// ── PHOTOS ──
+function drawPhotos(){
+  var el = document.getElementById("t-photos");
+  var photos = db.photos||[];
+  var h = "<p style=\"font-size:11px;color:#334;margin-bottom:10px\">Track your visual progress. Photos stored locally.</p>";
+  h += "<div style=\"display:flex;gap:8px;margin-bottom:12px\">";
+  h += "<label style=\"flex:1;padding:10px;background:#9ab0d8;border:1px solid #6888b8;border-radius:8px;text-align:center;cursor:pointer;font-size:12px;color:#1a2a60;font-weight:700\">📷 Camera<input type=\"file\" accept=\"image/*\" capture=\"environment\" style=\"display:none\" onchange=\"addPic(event)\"></label>";
+  h += "<label style=\"flex:1;padding:10px;background:#9ab0d8;border:1px solid #6888b8;border-radius:8px;text-align:center;cursor:pointer;font-size:12px;color:#1a2a60;font-weight:700\">🖼️ Gallery<input type=\"file\" accept=\"image/*\" style=\"display:none\" onchange=\"addPic(event)\"></label>";
+  h += "</div>";
+  if(photos.length===0){
+    h += "<div class=\"card\" style=\"padding:30px;text-align:center;color:#445;font-size:13px\"><div style=\"font-size:36px;margin-bottom:10px\">📸</div>No progress photos yet.</div>";
+  } else {
+    h += "<div class=\"pgrid\">";
+    var rev = photos.slice().reverse();
+    rev.forEach(function(p,ri){
+      var i = photos.length-1-ri;
+      var isFirst = (i===0);
+      h += "<div>";
+      h += "<img class=\"pthumb\" src=\""+p.data+"\" onclick=\"viewPic("+i+")\" alt=\"photo\">";
+      h += "<div style=\"display:flex;align-items:center;justify-content:space-between;margin-top:3px\">";
+      h += "<div class=\"pdate\">"+p.date+"</div>";
+      if(isFirst) h += "<span style=\"font-size:9px;font-weight:700;color:#804000;background:#e8d060;border-radius:3px;padding:1px 5px\">START</span>";
+      else if(photos.length>1) h += "<span style=\"font-size:9px;color:#1a2a60;cursor:pointer\" onclick=\"viewPic("+i+")\">vs start →</span>";
+      h += "</div>";
+      h += "<div style=\"text-align:center;margin-top:1px\"><button onclick=\"delPic("+i+")\" style=\"background:none;border:none;color:#882030;font-size:10px;cursor:pointer\">✕</button></div>";
+      h += "</div>";
+    });
+    h += "</div>";
+    if(photos.length>=2){
+      var days = Math.round((new Date(photos[photos.length-1].date)-new Date(photos[0].date))/(86400000));
+      h += "<div class=\"card\" style=\"padding:12px;margin-top:10px\"><div class=\"slbl2\">Progress Timeline</div>";
+      h += "<div style=\"font-size:11px;color:#334;line-height:1.6\">"+photos.length+" photos · "+days+" days · First: "+photos[0].date+" · Latest: "+photos[photos.length-1].date+"<br>Tap any photo to compare side-by-side with your starting point.</div></div>";
+    }
+  }
+  el.innerHTML = h;
+}
+
+function addPic(ev){
+  var file = ev.target.files[0];
+  if(!file) return;
+  var rd = new FileReader();
+  rd.onload = function(e){
+    var img = new Image();
+    img.onload = function(){
+      var c = document.createElement("canvas");
+      var MAX = 800; var w = img.width; var h = img.height;
+      if(w>h&&w>MAX){h=h*(MAX/w);w=MAX;}else if(h>MAX){w=w*(MAX/h);h=MAX;}
+      c.width=w; c.height=h;
+      c.getContext("2d").drawImage(img,0,0,w,h);
+      if(!db.photos) db.photos=[];
+      db.photos.push({data:c.toDataURL("image/jpeg",0.7), date:today});
+      save(); toast("📸 Photo saved!"); drawPhotos();
+    };
+    img.src = e.target.result;
+  };
+  rd.readAsDataURL(file);
+}
+
+function viewPic(i){
+  var photos = db.photos;
+  var p = photos[i];
+  if(!p) return;
+  var m = document.createElement("div");
+  m.style.cssText = "display:flex;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.92);z-index:1000;align-items:center;justify-content:center;padding:16px;overflow-y:auto";
+  var isFirst = (i===0);
+  var showCmp = photos.length>1&&!isFirst;
+  var days = showCmp?Math.round((new Date(p.date)-new Date(photos[0].date))/86400000):0;
+  var inner = "";
+  if(showCmp){
+    inner = "<div style=\"width:100%;max-width:600px\">";
+    inner += "<div style=\"display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px\">";
+    inner += "<div style=\"text-align:center\"><div style=\"font-size:10px;font-weight:700;color:#8898b0;text-transform:uppercase;margin-bottom:6px\">Starting Point</div>";
+    inner += "<img src=\""+photos[0].data+"\" style=\"width:100%;border-radius:8px;object-fit:cover;aspect-ratio:3/4\">";
+    inner += "<div style=\"font-size:11px;color:#8898b0;margin-top:5px\">"+photos[0].date+"</div></div>";
+    inner += "<div style=\"text-align:center\"><div style=\"font-size:10px;font-weight:700;color:#4caa38;text-transform:uppercase;margin-bottom:6px\">Now — Day "+days+"</div>";
+    inner += "<img src=\""+p.data+"\" style=\"width:100%;border-radius:8px;object-fit:cover;aspect-ratio:3/4\">";
+    inner += "<div style=\"font-size:11px;color:#8898b0;margin-top:5px\">"+p.date+"</div></div>";
+    inner += "</div>";
+    inner += "<div style=\"background:#1c2333;border-radius:10px;padding:12px;margin-bottom:12px;text-align:center;font-size:12px;color:#8898b0;line-height:1.6\">";
+    inner += "<strong style=\"color:#fff\">"+days+" days</strong> of training between these photos.";
+    inner += (days>=42?" Visible body composition changes are well underway.":days>=21?" Early adaptation phase — strength is building even if the mirror is slow to show it.":" Early days — stay consistent and the changes will come.");
+    inner += "</div>";
+    inner += "<button onclick=\"this.closest('div').parentNode.remove()\" style=\"width:100%;padding:11px;border-radius:8px;border:none;background:#2a5cb8;color:#fff;font-weight:700;font-size:13px;cursor:pointer\">Close</button></div>";
+  } else {
+    inner = "<div style=\"text-align:center;max-width:400px;width:100%\">";
+    inner += "<div style=\"font-size:10px;font-weight:700;color:#8898b0;text-transform:uppercase;margin-bottom:8px\">"+(isFirst?"Starting Point":p.date)+"</div>";
+    inner += "<img src=\""+p.data+"\" style=\"max-width:100%;max-height:70vh;border-radius:8px;object-fit:contain\">";
+    inner += "<div style=\"font-size:11px;color:#8898b0;margin-top:8px\">"+p.date+"</div>";
+    inner += "<button onclick=\"this.closest('div').parentNode.remove()\" style=\"margin-top:12px;width:100%;padding:11px;border-radius:8px;border:none;background:#2a5cb8;color:#fff;font-weight:700;font-size:13px;cursor:pointer\">Close</button></div>";
+  }
+  m.innerHTML = inner;
+  document.body.appendChild(m);
+}
+
+function delPic(i){
+  if(!confirm("Remove this photo?")) return;
+  db.photos.splice(i,1);
+  save(); toast("Photo removed."); drawPhotos();
+}
+
+// ── LABS ──
+function drawLabs(){
+  var el = document.getElementById("t-labs");
+  function sc(s){ return s==="high"?"#cc2020":s==="borderline"?"#b07000":"#1a8040"; }
+  var h = "<div class=\"card\" style=\"padding:0;margin-bottom:10px\">";
+  h += "<div style=\"padding:9px 13px 7px;border-bottom:1px solid #bbbec6\"><span style=\"font-weight:700;font-size:13px;color:#1a2040\">Quest Diagnostics — 02/16/2026</span></div>";
+  LABS.forEach(function(l){
+    var c = sc(l.s);
+    h += "<div class=\"lrow\"><div style=\"flex:1\"><div class=\"lname\" style=\"color:"+c+"\">"+l.n+"</div><div class=\"lnote\">"+l.note+"</div></div>";
+    h += "<div><div class=\"lval\" style=\"color:"+c+"\">"+l.v+l.u+"</div><div class=\"lref\">ref: "+l.ref+"</div></div></div>";
+  });
+  h += "</div><div class=\"card\" style=\"padding:13px\"><div class=\"slbl2\" style=\"margin-bottom:10px\">How This Program Addresses Your Labs</div>";
+  [
+    {t:"↓ LDL / Cholesterol", a:"4x/week post-lift cardio (Zone 2, 20 min) plus daily oatmeal for soluble fiber plus reduced saturated fat. Expect 10-15% LDL reduction over 12 weeks. With LDL at 197 your doctor may recommend a statin regardless — do not resist that conversation."},
+    {t:"↓ Triglycerides", a:"Cardio is the single most powerful triglyceride-lowering intervention. Cut alcohol and refined carbs. With consistent cardio 4x/week TG can drop 30-40% in 12 weeks."},
+    {t:"↑ HDL", a:"Aerobic exercise is the number one evidence-based HDL raiser. 20 min at 130-145 bpm, 4x/week. Target is moving from 46 toward 55+ over 3 months."},
+    {t:"Hematocrit (TRT management)", a:"3-4L of water daily, especially on 24-hr shifts. Cardio improves plasma volume which dilutes hematocrit. Discuss with your T prescriber."}
+  ].forEach(function(item){
+    h += "<div style=\"padding:7px 0;border-bottom:1px solid #bbbec6\">";
+    h += "<div style=\"font-size:11px;font-weight:700;color:#1a2060;margin-bottom:3px\">"+item.t+"</div>";
+    h += "<div style=\"font-size:11px;color:#334;line-height:1.5\">"+item.a+"</div></div>";
+  });
+  h += "</div>";
+  el.innerHTML = h;
+}
+
+// ── INIT ──
+try {
+  load();
+  updateBadge();
+  logDate = today;
+  logDay = P.find(function(d){ return d.day===DAYS[new Date().getDay()]; })||null;
+  drawPlan();
+} catch(e) {
+  document.body.innerHTML = "<div style='font-family:sans-serif;padding:30px;color:#c00;font-size:14px'><b>Error loading app:</b><br><pre>" + e.message + "\n" + e.stack + "</pre></div>";
+}
+</script>
+</body>
+</html>
